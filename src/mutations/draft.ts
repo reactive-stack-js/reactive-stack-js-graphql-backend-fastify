@@ -6,25 +6,23 @@ import {Model, Types} from "mongoose";
 import {GraphQLJSONObject} from "graphql-type-json";
 import {GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLString} from "graphql";
 
-import Draft from "../models/draft";
+import Draft, {GraphQLDraftType} from "../models/draft";
 import CollectionsModelsMap from "../util/collections.models.map";
-
-const _commonArgs = {
-	draftId: {type: GraphQLID},
-	field: {type: GraphQLString},
-	employeeId: {type: GraphQLInt}
-};
 
 const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), 'itemId');
 
 module.exports = {
 
-	focus: {
+	draftFocus: {
 		type: GraphQLBoolean,
-		args: _commonArgs,
+		args: {
+			userId: {type: GraphQLString},
+			draftId: {type: GraphQLID},
+			field: {type: GraphQLString}
+		},
 		resolve: async (parent: any, args: any) => {
-			const {draftId, field, employeeId} = args;
-			console.log('draft.add', parent, {draftId, field, employeeId});
+			const {draftId, field, userId} = args;
+			console.log('draftFocus', parent, {draftId, field, userId});
 
 			const draft = await Draft.findOne({_id: draftId});
 			if (draft) {
@@ -32,25 +30,28 @@ module.exports = {
 				if (_.get(meta, field)) return false;
 
 				_.each(meta, (val, id) => {
-					if (_.get(val, 'user', false) === employeeId) {
+					if (_.get(val, 'user', false) === userId) {
 						meta = _.omit(meta, id);
 					}
 				});
-				_.set(meta, field, {user: employeeId});
+				_.set(meta, field, {user: userId});
 				await Draft.updateOne({_id: draftId}, {$set: {meta}});
 				return true;
 			}
-
-			return {draftId, field, employeeId, error: 'Draft does not exist!'};
+			return {draftId, field, userId, error: 'Draft does not exist!'};
 		}
 	},
 
-	blur: {
+	draftBlur: {
 		type: GraphQLBoolean,
-		args: _commonArgs,
+		args: {
+			userId: {type: GraphQLString},
+			draftId: {type: GraphQLID},
+			field: {type: GraphQLString}
+		},
 		resolve: async (parent: any, args: any) => {
-			const {draftId, field, employeeId} = args;
-			console.log('draft.blur', {draftId, field, employeeId});
+			const {draftId, field, userId} = args;
+			console.log('draftBlur', {draftId, field, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
 			if (draft) {
@@ -59,62 +60,78 @@ module.exports = {
 					const curr = _.get(meta, field);
 					if (curr) {
 						const userId = _.get(curr, 'user');
-						if (userId !== employeeId) return false;
+						if (userId !== userId) return false;
 						const metaData = _.omit(meta, field);
 						await Draft.updateOne({_id: draftId}, {$set: {meta: metaData}});
 					}
 				}
 				return true;
 			}
-
-			return {draftId, field, employeeId, error: 'Draft does not exist!'};
+			return {draftId, field, userId, error: 'Draft does not exist!'};
 		}
 	},
 
-	change: {
+	draftChange: {
 		type: GraphQLJSONObject,
 		args: {
+			userId: {type: GraphQLString},
 			draftId: {type: GraphQLID},
-			employeeId: {type: GraphQLInt},
-			change: {type: GraphQLJSONObject}	// path, value
+			change: {type: GraphQLJSONObject}	// field, value
 		},
 		resolve: async (parent: any, args: any) => {
-			const {draftId, change, employeeId} = args;
-			const {path, value} = change;
+			const {draftId, change, userId} = args;
+			const {field, value} = change;
+			console.log('draftChange', {draftId, change, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
 			if (draft) {
 				let {document} = draft;
-				document = _.set(document, path, value);
+				document = _.set(document, field, value);
 				const updater = {
-					updatedBy: employeeId,
+					updatedBy: userId,
 					updatedAt: new Date(),
 					document
 				};
-				await Draft.updateOne({_id: draftId}, {$set: updater});
-
-				return change;
+				return Draft.updateOne({_id: draftId}, {$set: updater});
 			}
-
-			return {draftId, change, employeeId, error: 'Draft does not exist!'};
+			return {draftId, change: {field, value}, userId, error: 'Draft does not exist!'};
 		}
 	},
 
-	create: {
-		type: GraphQLID,
+	draftCancel: {
+		type: GraphQLBoolean,
 		args: {
-			collectionName: {type: GraphQLString},
-			sourceDocumentId: {type: GraphQLID},
-			employeeId: {type: GraphQLInt}
+			userId: {type: GraphQLString},
+			draftId: {type: GraphQLID}
 		},
 		resolve: async (parent: any, args: any) => {
-			const {collectionName, sourceDocumentId, employeeId} = args;
+			const {draftId} = args;
+			console.log('draftCancel', {draftId});
+
+			await Draft.remove({_id: draftId});
+			return true;
+		}
+	},
+
+	/**
+	 * This method will not work for complex drafts.
+	 * For documents that require references, please create a create draft method
+	 * in the respective mutations file and handle it there.
+	 */
+	draftCreate: {
+		type: GraphQLDraftType,
+		args: {
+			userId: {type: GraphQLString},
+			collectionName: {type: GraphQLString},
+			sourceDocumentId: {type: GraphQLID}
+		},
+		resolve: async (parent: any, args: any) => {
+			const {collectionName, sourceDocumentId, userId} = args;
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
+			console.log('draftCreate', {collectionName, sourceDocumentId, userId});
 
 			const document = await model.findOne({_id: sourceDocumentId});
-
-			// TODO: document hes refs?
 
 			const hasItemId = _hasItemId(model);
 			let draftQuery: any = {collectionName, sourceDocumentId};
@@ -126,20 +143,10 @@ module.exports = {
 				if (hasItemId) draft.sourceDocumentItemId = document.itemId;
 				draft.document = _.omit(document, ['_id', 'updatedAt', 'updatedBy']);
 				draft.meta = {};
-				draft.createdBy = employeeId;
-				existing = await model.create(draft);
+				draft.createdBy = userId;
+				existing = await Draft.create(draft);
 			}
-			return existing._id;
-		}
-	},
-
-	cancel: {
-		type: GraphQLBoolean,
-		args: {draftId: {type: GraphQLID}},
-		resolve: async (parent: any, args: any) => {
-			const {draftId} = args;
-			await Draft.remove({_id: draftId});
-			return true;
+			return existing;
 		}
 	}
 
