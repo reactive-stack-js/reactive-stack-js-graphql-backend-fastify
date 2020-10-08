@@ -30,23 +30,24 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
 			const {draftId, field} = args;
+			// console.log('draftFocus', {draftId, field, userId});
+
 			if (!_authorize(context)) return false;
 
 			const draft = await Draft.findOne({_id: draftId});
-			if (draft) {
-				let meta = _.get(draft, 'meta', {});
-				if (_.get(meta, field)) return false;
+			if (!draft) throw new Error(`Draft does not exist: ${draftId}`);
 
-				_.each(meta, (val, id) => {
-					if (_.get(val, 'user', false) === userId) {
-						meta = _.omit(meta, id);
-					}
-				});
-				_.set(meta, field, {user: userId});
-				await Draft.updateOne({_id: draftId}, {$set: {meta}});
-				return true;
-			}
-			return {draftId, field, userId, error: 'Draft does not exist!'};
+			let meta = _.get(draft, 'meta', {});
+			if (_.get(meta, field)) return false;
+
+			_.each(meta, (val, id) => {
+				if (_.get(val, 'user', false) === userId) {
+					meta = _.omit(meta, id);
+				}
+			});
+			_.set(meta, field, {user: userId});
+			await Draft.updateOne({_id: draftId}, {$set: {meta}});
+			return true;
 		}
 	},
 
@@ -59,23 +60,22 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
 			const {draftId, field} = args;
-			console.log('draftBlur', {draftId, field, userId});
+			// console.log('draftBlur', {draftId, field, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
-			if (draft) {
-				const meta = _.get(draft, 'meta', null);
-				if (meta) {
-					const curr = _.get(meta, field);
-					if (curr) {
-						const userId = _.get(curr, 'user');
-						if (userId !== userId) return false;
-						const metaData = _.omit(meta, field);
-						await Draft.updateOne({_id: draftId}, {$set: {meta: metaData}});
-					}
+			if (!draft) throw new Error(`Draft does not exist: ${draftId}`);
+
+			const meta = _.get(draft, 'meta', null);
+			if (meta) {
+				const curr = _.get(meta, field);
+				if (curr) {
+					const userId = _.get(curr, 'user');
+					if (userId !== userId) return false;
+					const metaData = _.omit(meta, field);
+					await Draft.updateOne({_id: draftId}, {$set: {meta: metaData}});
 				}
-				return true;
 			}
-			return {draftId, field, userId, error: 'Draft does not exist!'};
+			return true;
 		}
 	},
 
@@ -89,7 +89,7 @@ module.exports = {
 			const userId = _getUserId(context);
 			const {draftId, change} = args;
 			const {field, value} = change;
-			console.log('draftChange', {draftId, change, userId});
+			// console.log('draftChange', {draftId, change, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
 			if (draft) {
@@ -116,7 +116,7 @@ module.exports = {
 			// TODO: authorize...
 
 			const {draftId} = args;
-			console.log('draftCancel', {draftId});
+			// console.log('draftCancel', {draftId});
 
 			await Draft.deleteOne({_id: draftId});
 			return true;
@@ -129,7 +129,7 @@ module.exports = {
 	 * in the respective mutations file and handle it there.
 	 */
 	draftCreate: {
-		type: GraphQLDraftType,
+		type: GraphQLID,
 		args: {
 			collectionName: {type: GraphQLString},
 			sourceDocumentId: {type: GraphQLID}
@@ -137,9 +137,10 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
 			const {collectionName, sourceDocumentId} = args;
+			// console.log('draftCreate', {userId, collectionName, sourceDocumentId});
+
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
-			console.log('draftCreate', {collectionName, sourceDocumentId, userId});
 
 			const document = await model.findOne({_id: sourceDocumentId});
 
@@ -156,7 +157,7 @@ module.exports = {
 				draft.createdBy = userId;
 				existing = await Draft.create(draft);
 			}
-			return existing;
+			return existing._id;
 		}
 	},
 
@@ -166,29 +167,34 @@ module.exports = {
 	 * in the respective mutations file and handle it there.
 	 */
 	draftSave: {
-		type: GraphQLString,
+		type: GraphQLID,
 		args: {
-			draft: {type: GraphQLDraftTypeInput}
+			draftId: {type: GraphQLID}
 		},
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
-			const {draft} = args;
-			const {collectionName, document} = draft;
+			const {draftId} = args;
+			const draft: any = await Draft.findOne({_id: draftId});
+			const {collectionName} = draft;
+
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
 
-			const max: any = _.first(await model
-				.find({
-					itemId: document.itemId,
-					isLatest: true
-				})
+			const document = _.omit(draft.document, ['_id', 'createdAt']);
+
+			let max: any = await model
+				.find({itemId: document.itemId})
 				.sort({iteration: -1})
-				.limit(1));
-			await model.update({_id: max._id}, {$set: {isLatest: false}});
+				.limit(1);
+			max = _.first(max);
+			await model.updateOne({_id: max._id}, {$set: {isLatest: false}});
 
 			document.isLatest = true;
 			document.iteration = max.iteration + 1;
 			document.createdBy = userId;
+			document.createdAt = new Date();
+
+			await Draft.deleteOne({_id: draftId});
 			const dbDocument = await model.create(document);
 			return dbDocument._id;
 		}

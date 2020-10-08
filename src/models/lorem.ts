@@ -18,7 +18,7 @@ export const LoremSchema = new Schema(
 		species: {type: String, required: true},
 		rating: {type: Number, required: true},
 		description: {type: String, required: true},
-		createdBy: {type: Number},
+		createdBy: {type: String},
 		updatedBy: {type: String}
 	},
 	{
