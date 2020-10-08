@@ -28,7 +28,7 @@ export default class Client extends Subject<any> {
 		super();
 		this._stores = new Map<string, AStore>();
 		this._subscriptions = new Map<string, Subscription>();
-		this._timeout = setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
+		setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
 	public async consume(message: any): Promise<any> {
@@ -67,7 +67,7 @@ export default class Client extends Subject<any> {
 				this.next(JSON.stringify({type: 'refresh', payload: refreshPayload}));
 			}
 		}
-		this._timeout = setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
+		setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
 	private set location(location: string) {
