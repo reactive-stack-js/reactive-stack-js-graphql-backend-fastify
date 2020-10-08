@@ -11,7 +11,7 @@ import {composeWithMongoose} from "graphql-compose-mongoose";
 import graphQLQueryFactory from "./_f.query.factory";
 import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from "./_f.type.composer.fields.factory";
 import Draft, {GraphQLDraftType} from "../models/draft";
-import CollectionsModelsMap from "../util/collections.models.map";
+import CollectionsModelsMap from "../_reactivestack/collections.models.map";
 
 const _metaData = (model: Model<any>): any => {
 	const modelName = model.modelName;

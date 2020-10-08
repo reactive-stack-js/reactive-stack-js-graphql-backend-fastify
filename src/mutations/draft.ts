@@ -4,25 +4,33 @@
 import * as _ from "lodash";
 import {Model, Types} from "mongoose";
 import {GraphQLJSONObject} from "graphql-type-json";
-import {GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLString} from "graphql";
+import {GraphQLBoolean, GraphQLID, GraphQLString} from "graphql";
 
-import Draft, {GraphQLDraftType} from "../models/draft";
-import CollectionsModelsMap from "../util/collections.models.map";
+import CollectionsModelsMap from "../_reactivestack/collections.models.map";
+import Draft, {GraphQLDraftType, GraphQLDraftTypeInput} from "../models/draft";
 
 const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), 'itemId');
+
+const _getUserId = (context: any): string => _.get(context, 'reply.request.user.id', null);
+
+// TODO: extend to verify permissions, see below for usage
+const _authorize = (context: any): boolean => {
+	const userId = _.get(context, 'reply.request.user', null);
+	return !!userId;
+}
 
 module.exports = {
 
 	draftFocus: {
 		type: GraphQLBoolean,
 		args: {
-			userId: {type: GraphQLString},
 			draftId: {type: GraphQLID},
 			field: {type: GraphQLString}
 		},
-		resolve: async (parent: any, args: any) => {
-			const {draftId, field, userId} = args;
-			console.log('draftFocus', parent, {draftId, field, userId});
+		resolve: async (root: any, args: any, context: any) => {
+			const userId = _getUserId(context);
+			const {draftId, field} = args;
+			if (!_authorize(context)) return false;
 
 			const draft = await Draft.findOne({_id: draftId});
 			if (draft) {
@@ -45,12 +53,12 @@ module.exports = {
 	draftBlur: {
 		type: GraphQLBoolean,
 		args: {
-			userId: {type: GraphQLString},
 			draftId: {type: GraphQLID},
 			field: {type: GraphQLString}
 		},
-		resolve: async (parent: any, args: any) => {
-			const {draftId, field, userId} = args;
+		resolve: async (root: any, args: any, context: any) => {
+			const userId = _getUserId(context);
+			const {draftId, field} = args;
 			console.log('draftBlur', {draftId, field, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
@@ -74,12 +82,12 @@ module.exports = {
 	draftChange: {
 		type: GraphQLJSONObject,
 		args: {
-			userId: {type: GraphQLString},
 			draftId: {type: GraphQLID},
 			change: {type: GraphQLJSONObject}	// field, value
 		},
-		resolve: async (parent: any, args: any) => {
-			const {draftId, change, userId} = args;
+		resolve: async (root: any, args: any, context: any) => {
+			const userId = _getUserId(context);
+			const {draftId, change} = args;
 			const {field, value} = change;
 			console.log('draftChange', {draftId, change, userId});
 
@@ -101,32 +109,34 @@ module.exports = {
 	draftCancel: {
 		type: GraphQLBoolean,
 		args: {
-			userId: {type: GraphQLString},
 			draftId: {type: GraphQLID}
 		},
-		resolve: async (parent: any, args: any) => {
+		resolve: async (root: any, args: any, context: any) => {
+			const userId = _getUserId(context);
+			// TODO: authorize...
+
 			const {draftId} = args;
 			console.log('draftCancel', {draftId});
 
-			await Draft.remove({_id: draftId});
+			await Draft.deleteOne({_id: draftId});
 			return true;
 		}
 	},
 
 	/**
 	 * This method will not work for complex drafts.
-	 * For documents that require references, please create a create draft method
+	 * For documents that have references, please create a "create draft" method
 	 * in the respective mutations file and handle it there.
 	 */
 	draftCreate: {
 		type: GraphQLDraftType,
 		args: {
-			userId: {type: GraphQLString},
 			collectionName: {type: GraphQLString},
 			sourceDocumentId: {type: GraphQLID}
 		},
-		resolve: async (parent: any, args: any) => {
-			const {collectionName, sourceDocumentId, userId} = args;
+		resolve: async (root: any, args: any, context: any) => {
+			const userId = _getUserId(context);
+			const {collectionName, sourceDocumentId} = args;
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
 			console.log('draftCreate', {collectionName, sourceDocumentId, userId});
@@ -147,6 +157,40 @@ module.exports = {
 				existing = await Draft.create(draft);
 			}
 			return existing;
+		}
+	},
+
+	/**
+	 * This method will not work for complex drafts.
+	 * For documents that have references, please create a "save draft" method
+	 * in the respective mutations file and handle it there.
+	 */
+	draftSave: {
+		type: GraphQLString,
+		args: {
+			draft: {type: GraphQLDraftTypeInput}
+		},
+		resolve: async (root: any, args: any, context: any) => {
+			const userId = _getUserId(context);
+			const {draft} = args;
+			const {collectionName, document} = draft;
+			const model = CollectionsModelsMap.getModelByCollection(collectionName);
+			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
+
+			const max: any = _.first(await model
+				.find({
+					itemId: document.itemId,
+					isLatest: true
+				})
+				.sort({iteration: -1})
+				.limit(1));
+			await model.update({_id: max._id}, {$set: {isLatest: false}});
+
+			document.isLatest = true;
+			document.iteration = max.iteration + 1;
+			document.createdBy = userId;
+			const dbDocument = await model.create(document);
+			return dbDocument._id;
 		}
 	}
 

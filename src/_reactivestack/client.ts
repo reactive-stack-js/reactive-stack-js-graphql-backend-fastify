@@ -8,9 +8,9 @@ import * as jsonwebtoken from 'jsonwebtoken';
 import {Subject, Subscription} from 'rxjs';
 
 import AStore from "./store/_a.store";
-import jwtRefresh from "./_f.jwt.refresh";
 import storeFactory from "./store/_f.store.factory";
 import StoreSubscriptionUpdate from "./store/_t.store.subscription.update";
+import jwtTokenRefresh from "../util/_f.jwt.token.refresh";
 
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET;
@@ -22,13 +22,13 @@ export default class Client extends Subject<any> {
 	private _location: string;
 	private _stores: Map<string, AStore>;
 	private _subscriptions: Map<string, Subscription>;
-	private readonly _interval: Timeout;
+	private _timeout: Timeout;
 
 	public constructor() {
 		super();
 		this._stores = new Map<string, AStore>();
 		this._subscriptions = new Map<string, Subscription>();
-		this._interval = setInterval(this.checkSession, 299000);	// 4min 59sec
+		this._timeout = setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
 	public async consume(message: any): Promise<any> {
@@ -57,9 +57,9 @@ export default class Client extends Subject<any> {
 		}
 	}
 
-	private checkSession() {
+	private _checkSession() {
 		if (this._jwt) {
-			const refreshPayload = jwtRefresh(jwtSecret, this._jwt);
+			const refreshPayload = jwtTokenRefresh(jwtSecret, this._jwt);
 			if (refreshPayload) {
 				const {jwt, user} = refreshPayload;
 				this._jwt = jwt;
@@ -67,6 +67,7 @@ export default class Client extends Subject<any> {
 				this.next(JSON.stringify({type: 'refresh', payload: refreshPayload}));
 			}
 		}
+		this._timeout = setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
 	private set location(location: string) {
@@ -135,7 +136,7 @@ export default class Client extends Subject<any> {
 		this._stores.clear();
 		this._stores = null;
 
-		clearInterval(this._interval);
+		clearTimeout(this._timeout);
 	}
 
 }
