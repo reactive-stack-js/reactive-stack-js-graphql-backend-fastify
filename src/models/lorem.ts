@@ -61,7 +61,6 @@ export const graphQLMetaData = {
 // 		createdBy: {type: GraphQLString},
 // 		updatedAt: {type: GraphQLDateTime},
 // 		updatedBy: {type: GraphQLString},
-// 		isDraft: {type: GraphQLBoolean},
 // 		firstname: {type: GraphQLString},
 // 		lastname: {type: GraphQLString},
 // 		number: {type: GraphQLInt},
