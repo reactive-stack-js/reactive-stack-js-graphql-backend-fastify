@@ -1,40 +1,40 @@
 #!/usr/bin/env node
-'use strict';
-import {SocketStream} from 'fastify-websocket';
+"use strict";
+import {SocketStream} from "fastify-websocket";
 
-import Client from './client';
-import uuidv4 from '../util/_f.unique.id';
+import Client from "./client";
+import uuidv4 from "../util/_f.unique.id";
 
 export default (connection: SocketStream) => {
 	const {socket} = connection;
 	connection.resume();
 
 	const mySocketID = uuidv4();
-	console.log('[WS] Client connected', mySocketID);
-	socket.send(JSON.stringify({type: 'socketId', socketId: mySocketID}));
+	console.log("[WS] Client connected", mySocketID);
+	socket.send(JSON.stringify({type: "socketId", socketId: mySocketID}));
 
 	let client = new Client();
 	let subscription = client.subscribe({
 		next: (message) => socket.send(message),
-		error: (err) => console.log('error', err),
-		complete: () => console.log('completed')
+		error: (err) => console.log("error", err),
+		complete: () => console.log("completed")
 	});
 
-	socket.on('message', async (message: string) => {
-		console.log('\n - message:', message);
+	socket.on("message", async (message: string) => {
+		console.log("\n - message:", message);
 		message = JSON.parse(message);
 		await client.consume(message);
 	});
 
-	socket.on('close', () => {
-		console.log('[WS] Client disconnected', mySocketID);
+	socket.on("close", () => {
+		console.log("[WS] Client disconnected", mySocketID);
 		subscription.unsubscribe();
 		subscription = null;
 		client.destroy();
 		client = null;
 	});
 
-	socket.on('error', () => {
-		console.log('[WS] Client errored.');
+	socket.on("error", () => {
+		console.log("[WS] Client errored.");
 	});
 };

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import {model, Schema} from 'mongoose';
+import {model, Schema} from "mongoose";
 import {GraphQLString} from "graphql";
 
 import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
@@ -26,21 +26,21 @@ export const LoremSchema = new Schema(
 		versionKey: false,
 	}
 );
-const Lorem = model('Lorem', LoremSchema, 'lorems');
+const Lorem = model("Lorem", LoremSchema, "lorems");
 export default Lorem;
 
-const LoremTC = graphQLTypeComposerFactory(Lorem, 'GraphQLLoremType');
+const LoremTC = graphQLTypeComposerFactory(Lorem, "GraphQLLoremType");
 LoremTC.addFields({
 	name: {
 		type: GraphQLString,
-		resolve: (instance: any) => instance.firstname + ' ' + instance.lastname
+		resolve: (instance: any) => instance.firstname + " " + instance.lastname
 	}
 });
 
 export const GraphQLLoremType = LoremTC.getType();
 export const GraphQLLoremTypeInput = LoremTC.getInputTypeComposer().getType();
 export const graphQLMetaData = {
-	name: 'lorem',
+	name: "lorem",
 	model: Lorem,
 	tc: LoremTC,
 	type: GraphQLLoremType,
@@ -51,7 +51,7 @@ export const graphQLMetaData = {
 
 // TODO, remove this example
 // const GraphQLLoremType = new GraphQLObjectType({
-// 	name: 'Lorem',
+// 	name: "Lorem",
 // 	fields: () => ({
 // 		_id: {type: new GraphQLNonNull(GraphQLString)},
 // 		itemId: {type: GraphQLString},
@@ -67,7 +67,7 @@ export const graphQLMetaData = {
 // 		meta: {type: GraphQLJSONObject},
 // 		name: {
 // 			type: GraphQLString,
-// 			resolve: (instance) => instance.firstname + ' ' + instance.lastname;
+// 			resolve: (instance) => instance.firstname + " " + instance.lastname;
 // 		}
 // 	})
 // });

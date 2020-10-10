@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import Timeout = NodeJS.Timeout;
 
-import * as dotenv from 'dotenv';
-import * as jsonwebtoken from 'jsonwebtoken';
-import {Subject, Subscription} from 'rxjs';
+import * as dotenv from "dotenv";
+import * as jsonwebtoken from "jsonwebtoken";
+import {Subject, Subscription} from "rxjs";
 
 import AStore from "./store/_a.store";
 import storeFactory from "./store/_f.store.factory";
@@ -32,26 +32,26 @@ export default class Client extends Subject<any> {
 	}
 
 	public async consume(message: any): Promise<any> {
-		// console.log(' - Client::consume received message', message.type);
+		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
-			case 'register':
+			case "register":
 				const user = jsonwebtoken.verify(message.jwt, jwtSecret);
 				this._jwt = message.jwt;
 				this._user = user;
 				// TODO: store user in clients collection
 				return;
 
-			case 'location':
+			case "location":
 				const {path} = message;
 				this.location = path;
 				return;
 
-			case 'subscribe':
+			case "subscribe":
 				this.updateSubscription(message);
 				return;
 
-			case 'unsubscribe':
+			case "unsubscribe":
 				this.removeSubscription(message.target);
 				return;
 		}
@@ -64,14 +64,14 @@ export default class Client extends Subject<any> {
 				const {jwt, user} = refreshPayload;
 				this._jwt = jwt;
 				this._user = user;
-				this.next(JSON.stringify({type: 'refresh', payload: refreshPayload}));
+				this.next(JSON.stringify({type: "refresh", payload: refreshPayload}));
 			}
 		}
 		setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
 	private set location(location: string) {
-		// console.log(' - Client location', '[' + this._location + ']', '[' + location + ']');
+		// console.log(" - Client location", "[" + this._location + "]", "[" + location + "]");
 		if (location === this._location) return;
 		this._location = location;
 

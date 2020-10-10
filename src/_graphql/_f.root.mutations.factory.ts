@@ -1,20 +1,20 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
 const _processFile = (root: any, folder: string, file: string): any => {
 	const fullPath = path.join(folder, file);
 	const mutations = require(fullPath);
 
 	const filename = path.parse(file).name;
-	const relPath = './mutations' + _.last(_.split(folder + '/' + file, 'mutations'));
+	const relPath = "./mutations" + _.last(_.split(folder + "/" + file, "mutations"));
 
 	const wrong = _.filter(_.keys(mutations), (key) => !_.startsWith(key, filename));
-	console.log(' - In', relPath, 'RENAMING following mutations:', _.join(wrong, ', '));
+	console.log(" - In", relPath, "RENAMING following mutations:", _.join(wrong, ", "));
 
 	const fixed: any = {};
 	const keys = _.keys(mutations);
@@ -34,7 +34,7 @@ const _processFolder = (root: any, folder: string): any => {
 	const files = _.filter(fileNames, (fileName) => !fs.lstatSync(path.join(folder, fileName)).isDirectory());
 	files.forEach((file) => {
 		const ext = path.extname(file);
-		if (ext !== '.ts' && ext !== '.js') return;
+		if (ext !== ".ts" && ext !== ".js") return;
 		root = _processFile(root, folder, file);
 	});
 

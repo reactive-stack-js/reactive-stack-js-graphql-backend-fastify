@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import * as _ from "lodash";
-import {Subject} from 'rxjs';
-import {ChangeStream} from 'mongodb';
+import {Subject} from "rxjs";
+import {ChangeStream} from "mongodb";
 import {Model} from "mongoose";
 
 // TODO: add USER param to be able to CHECK PERMISSIONS in ObservableModelsMap
@@ -18,9 +18,9 @@ class ObservableModel extends Subject<any> {
 		this._model = model;
 		this._stream = this._model.watch([], {fullDocument: "updateLookup"});
 
-		this._stream.on('change', (change) => {
+		this._stream.on("change", (change) => {
 			// you can also just forward the entire change object: this.next(change);
-			this.next(_.pick(change, ['ns', 'documentKey', 'operationType', 'updateDescription', 'fullDocument']));
+			this.next(_.pick(change, ["ns", "documentKey", "operationType", "updateDescription", "fullDocument"]));
 		});
 	}
 }

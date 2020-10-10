@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 // import * as _ from "lodash";
 import {Model} from "mongoose";
@@ -16,7 +16,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 		args: {id: {type: GraphQLID}, query: {type: GraphQLJSONObject}},
 		resolve: (parent: any, args: any) => {
 			const {id, query} = args;
-			// const user = _.get(context, 'reply.request.user');
+			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
 			if (id) return model.findOne({_id: args.id});
 			return model.findOne(query);
@@ -24,7 +24,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	};
 
 	// List by filter, pageSize, page and with sort
-	queries[name + 's'] = {
+	queries[name + "s"] = {
 		type: new GraphQLList(type),
 		args: {
 			pageSize: {type: GraphQLInt},
@@ -34,7 +34,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 		},
 		resolve: (parent: any, args: any) => {
 			const {page, pageSize, filter = {}, sort = {}} = args;
-			// const user = _.get(context, 'reply.request.user');
+			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
 			if (page && pageSize) {
 				return model
@@ -51,14 +51,14 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	};
 
 	// List count by filter
-	queries[name + 'sCount'] = {
+	queries[name + "sCount"] = {
 		type: GraphQLInt,
 		args: {
 			filter: {type: GraphQLJSONObject}
 		},
 		resolve: (parent: any, args: any) => {
 			const {filter = {}} = args;
-			// const user = _.get(context, 'reply.request.user');
+			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
 			return model.countDocuments(filter);
 		}

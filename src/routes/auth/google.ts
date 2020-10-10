@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import axios from 'axios';
+import axios from "axios";
 
-import authenticate from '../../util/_f.authenticate';
+import authenticate from "../../util/_f.authenticate";
 
 const GG_APP_ID = process.env.GG_APP_ID;
 const GG_APP_SECRET = process.env.GG_APP_SECRET;
@@ -28,7 +28,7 @@ const _userData = async (accessToken: string): Promise<any> => {
 	const {data} = response;
 
 	return {
-		provider: 'google',
+		provider: "google",
 		providerId: data.id,
 		name: data.name,
 		email: data.email,
@@ -37,8 +37,8 @@ const _userData = async (accessToken: string): Promise<any> => {
 };
 
 module.exports = {
-	method: 'POST',
-	url: '/auth/google',
+	method: "POST",
+	url: "/auth/google",
 	handler: async (request: any, reply: any) => {
 		const {code, scope, redirect_uri} = request.body;
 		const {access_token} = await _userAccessToken(code, scope, redirect_uri);
@@ -48,6 +48,6 @@ module.exports = {
 			const jwt = await reply.jwtSign(user);
 			return reply.send({jwt, user});
 		}
-		reply.send({error: 'auch'});
+		reply.send({error: "auch"});
 	},
 };

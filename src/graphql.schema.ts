@@ -1,20 +1,20 @@
-import * as path from 'path';
-import {GraphQLSchema, GraphQLObjectType} from 'graphql';
+import * as path from "path";
+import {GraphQLSchema, GraphQLObjectType} from "graphql";
 
 import graphQLRootQueryFactory from "./_graphql/_f.root.query.factory";
 import graphQLRootMutationsFactory from "./_graphql/_f.root.mutations.factory";
 
 const RootQuery = new GraphQLObjectType({
-	name: 'RootQueryType',
+	name: "RootQueryType",
 	fields: {
-		...graphQLRootQueryFactory(path.join(__dirname, './models'))
+		...graphQLRootQueryFactory(path.join(__dirname, "./models"))
 	}
 });
 
 const Mutations = new GraphQLObjectType({
-	name: 'Mutations',
+	name: "Mutations",
 	fields: {
-		...graphQLRootMutationsFactory(path.join(__dirname, './mutations'))
+		...graphQLRootMutationsFactory(path.join(__dirname, "./mutations"))
 	}
 });
 
@@ -26,4 +26,4 @@ export default GQLSchema;
 
 // Exmaple call:
 // graphql(schema, `{ lorem(id: "5f5f498eb312715040bd3c62") {name, itemId} }`)
-// 	.then(data => console.log(' - graphql on the server', data))
+// 	.then(data => console.log(" - graphql on the server", data))

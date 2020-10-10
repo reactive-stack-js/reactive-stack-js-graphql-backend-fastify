@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 type StoreSubscriptionUpdate = {
 	target: string,
-	scope: 'many' | 'one',
+	scope: "many" | "one",
 	config: any,
 
 	// use if mongodb is the only reactive source
@@ -11,7 +11,7 @@ type StoreSubscriptionUpdate = {
 
 	// use when more than one reactive source exists, to distinguish between them
 	// observe: {
-	// 	source: 'mongodb',
+	// 	source: "mongodb",
 	// 	name: string			// collectionName
 	// }
 };

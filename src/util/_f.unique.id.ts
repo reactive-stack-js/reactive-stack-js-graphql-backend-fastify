@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import {v4} from 'uuid';
+import {v4} from "uuid";
 
-export default () => v4().replace(/-/g, '');
+export default () => v4().replace(/-/g, "");

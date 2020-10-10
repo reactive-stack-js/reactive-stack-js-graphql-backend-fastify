@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import * as _ from "lodash";
 import {Subject, Subscription} from "rxjs";
@@ -9,7 +9,7 @@ export enum EStoreType { DOCUMENT, COLLECTION}
 
 // tslint:disable-next-line:variable-name
 const _baseMessage = (field: string) => ({
-	type: 'update',
+	type: "update",
 	path: field,
 	payload: {}
 });
@@ -112,7 +112,7 @@ export default abstract class AStore extends Subject<any> {
 		const {total, data} = update;
 		const message = _baseMessage(this._target);
 		_.set(message.payload, this._target, data);
-		_.set(message.payload, '_' + this._target + 'Count', total);
+		_.set(message.payload, "_" + this._target + "Count", total);
 		this.next(JSON.stringify(message));
 	}
 

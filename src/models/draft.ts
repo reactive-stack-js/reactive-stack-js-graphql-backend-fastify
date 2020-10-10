@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import {model, Schema} from 'mongoose';
-import uuidv4 from '../util/_f.unique.id';
+import {model, Schema} from "mongoose";
+import uuidv4 from "../util/_f.unique.id";
 import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
 import {GraphQLString} from "graphql";
 import {GraphQLJSONObject} from "graphql-type-json";
@@ -22,14 +22,14 @@ const DraftSchema = new Schema(
 		versionKey: false,
 	},
 );
-const Draft = model('Draft', DraftSchema, 'drafts');
+const Draft = model("Draft", DraftSchema, "drafts");
 export default Draft;
 
-const DraftTC = graphQLTypeComposerFactory(Draft, 'GraphQLDraftType');
+const DraftTC = graphQLTypeComposerFactory(Draft, "GraphQLDraftType");
 export const GraphQLDraftType = DraftTC.getType();
 export const GraphQLDraftTypeInput = DraftTC.getInputTypeComposer().getType();
 export const graphQLMetaData = {
-	name: 'draft',
+	name: "draft",
 	model: Draft,
 	tc: DraftTC,
 	type: GraphQLDraftType

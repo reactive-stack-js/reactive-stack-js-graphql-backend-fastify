@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import sift from 'sift';
-import * as _ from 'lodash';
-import {filter} from 'rxjs/operators';
+import sift from "sift";
+import * as _ from "lodash";
+import {filter} from "rxjs/operators";
 
-import AStore, {EStoreType} from './_a.store';
-import observableModel from '../_f.observable.model';
+import AStore, {EStoreType} from "./_a.store";
+import observableModel from "../_f.observable.model";
 
 // tslint:disable-next-line:variable-name
-const __getIdFromQuery = (query: any) => _.isString(query) ? query : _.get(query, '_id');
+const __getIdFromQuery = (query: any) => _.isString(query) ? query : _.get(query, "_id");
 
 export default class DocumentStore extends AStore {
 
@@ -52,7 +52,7 @@ export default class DocumentStore extends AStore {
 
 		// TODO: handle deletions?
 		if (!document) {
-			console.error('_pipeFilter error: missing document:', change);
+			console.error("_pipeFilter error: missing document:", change);
 			return false;
 		}
 

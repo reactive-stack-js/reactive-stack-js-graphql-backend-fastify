@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import * as _ from "lodash";
 import {Model, Types} from "mongoose";

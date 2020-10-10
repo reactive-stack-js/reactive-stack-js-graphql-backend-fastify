@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import {Model} from "mongoose";
 
@@ -10,7 +10,7 @@ import CollectionsModelsMap from "../collections.models.map";
 
 const storeFactory = (scope: string, observe: string, target: string): AStore => {
 	const model: Model<any> = CollectionsModelsMap.getModelByCollection(observe);
-	if (scope === 'many') return new CollectionStore(model, target);
+	if (scope === "many") return new CollectionStore(model, target);
 	return new DocumentStore(model, target);
 }
 export default storeFactory;

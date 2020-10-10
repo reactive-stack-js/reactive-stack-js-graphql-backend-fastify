@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
-import * as _ from 'lodash';
+import * as _ from "lodash";
 import {Model} from "mongoose";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
@@ -15,10 +15,10 @@ import CollectionsModelsMap from "../_reactivestack/collections.models.map";
 
 const _metaData = (model: Model<any>): any => {
 	const modelName = model.modelName;
-	const words = _.join(_.map(_.words(modelName), (w) => _.upperFirst(_.toLower(w))), '');
+	const words = _.join(_.map(_.words(modelName), (w) => _.upperFirst(_.toLower(w))), "");
 
 	const name = _.lowerFirst(words);
-	const typeName = _.join(['GraphQL', words, 'Type'], '');
+	const typeName = _.join(["GraphQL", words, "Type"], "");
 
 	const tc = composeWithMongoose(model, {name: typeName});
 	return {
@@ -53,7 +53,7 @@ const _processFolder = (root: any, folder: string): any => {
 	const files = _.filter(fileNames, (fileName) => !fs.lstatSync(path.join(folder, fileName)).isDirectory());
 	files.forEach((file) => {
 		const ext = path.extname(file);
-		if (ext !== '.ts' && ext !== '.js') return;
+		if (ext !== ".ts" && ext !== ".js") return;
 
 		root = _processFile(root, folder, file);
 	});
@@ -83,11 +83,11 @@ const _processReverseRefs = (): void => {
 
 			} else if (_.isBoolean(value)) {
 				const fields = _.keys(tc.getFields());
-				const hasItemId = _.includes(fields, 'itemId');
-				const through = hasItemId ? 'sourceDocumentItemId' : 'sourceDocumentId';
+				const hasItemId = _.includes(fields, "itemId");
+				const through = hasItemId ? "sourceDocumentItemId" : "sourceDocumentId";
 				schemaFields.push({
-					name: 'draft',
-					target: 'draft',
+					name: "draft",
+					target: "draft",
 					type: GraphQLDraftType,
 					model: Draft,
 					through

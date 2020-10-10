@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import * as _ from "lodash";
 import * as moment from "moment";
@@ -13,8 +13,8 @@ const jwtTokenRefresh = (jwtSecret: string, jwt: any): any => {
 	let token = jsonwebtoken.verify(jwt, jwtSecret);
 
 	const now = moment(new Date());
-	const refreshAt = moment(_.get(token, 'refresh_at'));
-	if (refreshAt.isBefore(now, 'seconds')) {
+	const refreshAt = moment(_.get(token, "refresh_at"));
+	if (refreshAt.isBefore(now, "seconds")) {
 		token = _refresh(token);
 		jwt = jsonwebtoken.sign(token, jwtSecret);
 		return {user: token, jwt};

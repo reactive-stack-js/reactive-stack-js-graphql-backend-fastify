@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import * as _ from "lodash";
 
-import AStore, {EStoreType} from './_a.store';
-import observableModel from '../_f.observable.model';
+import AStore, {EStoreType} from "./_a.store";
+import observableModel from "../_f.observable.model";
 
 export default class CollectionStore extends AStore {
 
@@ -22,7 +22,7 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected async load() {
-		// console.log('\n - CollectionSection load', this._field, this._query, this._sort, this._fields, this._paging);
+		// console.log("\n - CollectionSection load", this._field, this._query, this._sort, this._fields, this._paging);
 		if (_.isEmpty(this._config)) return this.emit();
 
 		let data = [];

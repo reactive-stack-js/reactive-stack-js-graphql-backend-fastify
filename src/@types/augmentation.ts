@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-import * as http from 'http';
+import * as http from "http";
 
-declare module 'fastify' {
+declare module "fastify" {
 	// @ts-ignore
 	export interface FastifyInstance<HttpServer = http.Server, HttpRequest = http.IncomingMessage, HttpResponse = http.ServerResponse> {
 		// @ts-ignore
