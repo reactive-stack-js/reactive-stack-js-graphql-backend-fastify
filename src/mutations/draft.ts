@@ -56,7 +56,7 @@ module.exports = {
 			field: {type: GraphQLString}
 		},
 		resolve: async (root: any, args: any, context: any) => {
-			// const userId = _getUserId(context);
+			const userId = _getUserId(context);
 			const {draftId, field} = args;
 			// console.log("draftBlur", {draftId, field, userId});
 
@@ -67,8 +67,8 @@ module.exports = {
 			if (meta) {
 				const curr = _.get(meta, field);
 				if (curr) {
-					const userId = _.get(curr, "user");
-					if (userId !== userId) return false;
+					const focusedBy = _.get(curr, "user");
+					if (focusedBy !== userId) return false;
 					const metaData = _.omit(meta, field);
 					await Draft.updateOne({_id: draftId}, {$set: {meta: metaData}});
 				}
@@ -172,6 +172,7 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
 			const {draftId} = args;
+
 			const draft: any = await Draft.findOne({_id: draftId});
 			const {collectionName} = draft;
 

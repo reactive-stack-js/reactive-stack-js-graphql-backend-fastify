@@ -9,7 +9,7 @@ import {Subject, Subscription} from "rxjs";
 
 import AStore from "./store/_a.store";
 import storeFactory from "./store/_f.store.factory";
-import StoreSubscriptionUpdate from "./store/_t.store.subscription.update";
+import StoreSubscriptionUpdateType from "./store/_t.store.subscription.update";
 import jwtTokenRefresh from "../util/_f.jwt.token.refresh";
 
 dotenv.config();
@@ -95,7 +95,7 @@ export default class Client extends Subject<any> {
 		this._subscriptions.delete(target);
 	}
 
-	private updateSubscription(subscriptionConfig: StoreSubscriptionUpdate): void {
+	private updateSubscription(subscriptionConfig: StoreSubscriptionUpdateType): void {
 		const {target, scope, observe, config} = subscriptionConfig;
 
 		let store = this._stores.get(target);

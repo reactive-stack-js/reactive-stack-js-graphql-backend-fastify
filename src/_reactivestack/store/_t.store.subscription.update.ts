@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-type StoreSubscriptionUpdate = {
+type StoreSubscriptionUpdateType = {
 	target: string,
 	scope: "many" | "one",
 	config: any,
@@ -15,4 +15,4 @@ type StoreSubscriptionUpdate = {
 	// 	name: string			// collectionName
 	// }
 };
-export default StoreSubscriptionUpdate;
+export default StoreSubscriptionUpdateType;
