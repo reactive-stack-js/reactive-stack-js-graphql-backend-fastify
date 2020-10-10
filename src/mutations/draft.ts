@@ -7,7 +7,7 @@ import {GraphQLJSONObject} from "graphql-type-json";
 import {GraphQLBoolean, GraphQLID, GraphQLString} from "graphql";
 
 import CollectionsModelsMap from "../_reactivestack/collections.models.map";
-import Draft, {GraphQLDraftType, GraphQLDraftTypeInput} from "../models/draft";
+import Draft from "../models/draft";
 
 const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), 'itemId');
 
@@ -58,7 +58,7 @@ module.exports = {
 			field: {type: GraphQLString}
 		},
 		resolve: async (root: any, args: any, context: any) => {
-			const userId = _getUserId(context);
+			// const userId = _getUserId(context);
 			const {draftId, field} = args;
 			// console.log('draftBlur', {draftId, field, userId});
 
@@ -112,7 +112,7 @@ module.exports = {
 			draftId: {type: GraphQLID}
 		},
 		resolve: async (root: any, args: any, context: any) => {
-			const userId = _getUserId(context);
+			// const userId = _getUserId(context);
 			// TODO: authorize...
 
 			const {draftId} = args;
