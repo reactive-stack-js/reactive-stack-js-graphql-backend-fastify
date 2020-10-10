@@ -7,7 +7,6 @@ import {ChangeStream} from "mongodb";
 import {Model} from "mongoose";
 
 // TODO: add USER param to be able to CHECK PERMISSIONS in ObservableModelsMap
-export default (model: any): ObservableModel => ObservableModelsMap.get(model);
 
 class ObservableModel extends Subject<any> {
 	private _model: any;
@@ -48,8 +47,10 @@ class ObservableModelsMap {
 	private constructor() {
 		this._map = new Map<string, ObservableModel>();
 	}
-
 }
+
+const observableModel = (model: any): ObservableModel => ObservableModelsMap.get(model);
+export default observableModel;
 
 // @TODO nice2have: stop stream when no subscribers / restart stream on subscribe... not MVP:
 // this._stream.close();

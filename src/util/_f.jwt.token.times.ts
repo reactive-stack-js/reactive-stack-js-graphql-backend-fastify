@@ -5,9 +5,9 @@ import * as moment from "moment-timezone";
 const EXPIRES = 1800000;	// 30 mins
 const REFRESH = 1200000;	// 20 mins
 
-const _now = () => Math.floor(new Date().getTime() / 1000) * 1000;
+const _now = ():number => Math.floor(new Date().getTime() / 1000) * 1000;
 
-const jwtTokenTimes = () => ({
+const jwtTokenTimes = (): any => ({
 	token_received_at: _now(),
 	expires_in: EXPIRES,
 	expires_at: _now() + EXPIRES,

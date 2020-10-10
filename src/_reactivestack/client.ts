@@ -31,7 +31,7 @@ export default class Client extends Subject<any> {
 		setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
-	public async consume(message: any): Promise<any> {
+	public async consume(message: any): Promise<void> {
 		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {

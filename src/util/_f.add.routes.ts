@@ -11,9 +11,7 @@ import {IncomingMessage, Server, ServerResponse} from "http";
 const METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"];
 const _addRoute = (fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>, route: any): void => {
 	if (_.has(route, "method")) route.method = _.toUpper(route.method);
-	if (_.isPlainObject(route) && METHODS.includes(route.method)) {
-		fastify.route(route);
-	}
+	if (_.isPlainObject(route) && METHODS.includes(route.method)) fastify.route(route);
 };
 
 const addRoutes = (fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>, folder: string): void => {

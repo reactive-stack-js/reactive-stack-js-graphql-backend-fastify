@@ -3,4 +3,4 @@
 
 import {v4} from "uuid";
 
-export default () => v4().replace(/-/g, "");
+export default (): string => v4().replace(/-/g, "");

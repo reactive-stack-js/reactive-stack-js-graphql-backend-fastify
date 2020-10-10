@@ -2,13 +2,14 @@
 "use strict";
 
 import * as _ from "lodash";
+import {Model} from "mongoose";
 import {Subject, Subscription} from "rxjs";
 import * as jsondiffpatch from "jsondiffpatch";
 
 export enum EStoreType { DOCUMENT, COLLECTION}
 
 // tslint:disable-next-line:variable-name
-const _baseMessage = (field: string) => ({
+const _baseMessage = (field: string): any => ({
 	type: "update",
 	path: field,
 	payload: {}
@@ -16,7 +17,7 @@ const _baseMessage = (field: string) => ({
 
 export default abstract class AStore extends Subject<any> {
 
-	protected _model: any;
+	protected _model: Model<any>;
 	protected _target: string;
 	protected _type: EStoreType;
 
@@ -29,7 +30,7 @@ export default abstract class AStore extends Subject<any> {
 
 	protected _subscription: Subscription;
 
-	protected constructor(model: any, target: string) {
+	protected constructor(model: Model<any>, target: string) {
 		super();
 
 		this._model = model;
@@ -40,16 +41,16 @@ export default abstract class AStore extends Subject<any> {
 		this._paging = {};
 	}
 
-	public destroy() {
+	public destroy(): void {
 		if (this._subscription) this._subscription.unsubscribe();
 		this._subscription = null;
 	}
 
-	protected abstract async load(change: any): Promise<any>;
+	protected abstract async load(change: any): Promise<void>;
 
 	protected abstract restartSubscription(): void;
 
-	protected extractFromConfig() {
+	protected extractFromConfig(): void {
 		const {query = {}, sort = {}, fields = {}} = this._config;
 		this._query = query;
 		this._sort = sort;
@@ -67,11 +68,11 @@ export default abstract class AStore extends Subject<any> {
 		this.load({});
 	}
 
-	protected get model() {
+	protected get model(): Model<any> {
 		return this._model;
 	}
 
-	protected emit(update: any = {}) {
+	protected emit(update: any = {}): void {
 		if (this._isDocument()) return this._emitOne(update);
 		if (this._isCollection()) return this._emitMany(update);
 	}
@@ -84,7 +85,7 @@ export default abstract class AStore extends Subject<any> {
 		this.restartSubscription();
 	}
 
-	public get target() {
+	public get target(): string {
 		return this._target;
 	}
 
@@ -102,13 +103,13 @@ export default abstract class AStore extends Subject<any> {
 		return !_.isEmpty(diff);
 	}
 
-	private _emitOne(update: any) {
+	private _emitOne(update: any): void {
 		const message = _baseMessage(this._target);
 		_.set(message.payload, this._target, update);
 		this.next(JSON.stringify(message));
 	}
 
-	private _emitMany(update: any = {total: 0, data: []}) {
+	private _emitMany(update: any = {total: 0, data: []}): void {
 		const {total, data} = update;
 		const message = _baseMessage(this._target);
 		_.set(message.payload, this._target, data);

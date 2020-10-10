@@ -7,7 +7,7 @@ import * as jsonwebtoken from "jsonwebtoken";
 
 import jwtTokenTimes from "./_f.jwt.token.times";
 
-export const _refresh = (token: any) => _.merge(token, jwtTokenTimes());
+export const _refresh = (token: any): any => _.merge(token, jwtTokenTimes());
 
 const jwtTokenRefresh = (jwtSecret: string, jwt: any): any => {
 	let token = jsonwebtoken.verify(jwt, jwtSecret);
