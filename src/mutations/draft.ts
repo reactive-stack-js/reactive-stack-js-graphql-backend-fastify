@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import * as _ from "lodash";
 import {Model, Types} from "mongoose";
@@ -9,13 +9,13 @@ import {GraphQLBoolean, GraphQLID, GraphQLString} from "graphql";
 import CollectionsModelsMap from "../_reactivestack/collections.models.map";
 import Draft from "../models/draft";
 
-const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), 'itemId');
+const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), "itemId");
 
-const _getUserId = (context: any): string => _.get(context, 'reply.request.user.id', null);
+const _getUserId = (context: any): string => _.get(context, "reply.request.user.id", null);
 
 // TODO: extend to verify permissions, see below for usage
 const _authorize = (context: any): boolean => {
-	const userId = _.get(context, 'reply.request.user', null);
+	const userId = _.get(context, "reply.request.user", null);
 	return !!userId;
 }
 
@@ -30,18 +30,18 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
 			const {draftId, field} = args;
-			// console.log('draftFocus', {draftId, field, userId});
+			// console.log("draftFocus", {draftId, field, userId});
 
 			if (!_authorize(context)) return false;
 
 			const draft = await Draft.findOne({_id: draftId});
 			if (!draft) throw new Error(`Draft does not exist: ${draftId}`);
 
-			let meta = _.get(draft, 'meta', {});
+			let meta = _.get(draft, "meta", {});
 			if (_.get(meta, field)) return false;
 
 			_.each(meta, (val, id) => {
-				if (_.get(val, 'user', false) === userId) {
+				if (_.get(val, "user", false) === userId) {
 					meta = _.omit(meta, id);
 				}
 			});
@@ -60,16 +60,16 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			// const userId = _getUserId(context);
 			const {draftId, field} = args;
-			// console.log('draftBlur', {draftId, field, userId});
+			// console.log("draftBlur", {draftId, field, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
 			if (!draft) throw new Error(`Draft does not exist: ${draftId}`);
 
-			const meta = _.get(draft, 'meta', null);
+			const meta = _.get(draft, "meta", null);
 			if (meta) {
 				const curr = _.get(meta, field);
 				if (curr) {
-					const userId = _.get(curr, 'user');
+					const userId = _.get(curr, "user");
 					if (userId !== userId) return false;
 					const metaData = _.omit(meta, field);
 					await Draft.updateOne({_id: draftId}, {$set: {meta: metaData}});
@@ -89,7 +89,7 @@ module.exports = {
 			const userId = _getUserId(context);
 			const {draftId, change} = args;
 			const {field, value} = change;
-			// console.log('draftChange', {draftId, change, userId});
+			// console.log("draftChange", {draftId, change, userId});
 
 			const draft: any = await Draft.findOne({_id: draftId});
 			if (draft) {
@@ -102,7 +102,7 @@ module.exports = {
 				};
 				return Draft.updateOne({_id: draftId}, {$set: updater});
 			}
-			return {draftId, change: {field, value}, userId, error: 'Draft does not exist!'};
+			return {draftId, change: {field, value}, userId, error: "Draft does not exist!"};
 		}
 	},
 
@@ -116,7 +116,7 @@ module.exports = {
 			// TODO: authorize...
 
 			const {draftId} = args;
-			// console.log('draftCancel', {draftId});
+			// console.log("draftCancel", {draftId});
 
 			await Draft.deleteOne({_id: draftId});
 			return true;
@@ -137,7 +137,7 @@ module.exports = {
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
 			const {collectionName, sourceDocumentId} = args;
-			// console.log('draftCreate', {userId, collectionName, sourceDocumentId});
+			// console.log("draftCreate", {userId, collectionName, sourceDocumentId});
 
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
@@ -152,7 +152,7 @@ module.exports = {
 			if (!existing) {
 				const draft: any = {_id: Types.ObjectId(), collectionName, sourceDocumentId};
 				if (hasItemId) draft.sourceDocumentItemId = document.itemId;
-				draft.document = _.omit(document, ['_id', 'updatedAt', 'updatedBy']);
+				draft.document = _.omit(document, ["_id", "updatedAt", "updatedBy"]);
 				draft.meta = {};
 				draft.createdBy = userId;
 				existing = await Draft.create(draft);
@@ -180,7 +180,7 @@ module.exports = {
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
 
-			const document = _.omit(draft.document, ['_id', 'createdAt']);
+			const document = _.omit(draft.document, ["_id", "createdAt"]);
 
 			let max: any = await model
 				.find({itemId: document.itemId})
