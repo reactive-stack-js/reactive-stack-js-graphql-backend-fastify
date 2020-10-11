@@ -28,11 +28,11 @@ export default class Client extends Subject<any> {
 		super();
 		this._stores = new Map<string, AStore>();
 		this._subscriptions = new Map<string, Subscription>();
-		setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
+		this._checkSession();
 	}
 
 	public async consume(message: any): Promise<void> {
-		// console.log(" - Client::consume received message", message.type);
+		console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
 			case "register":
@@ -57,7 +57,7 @@ export default class Client extends Subject<any> {
 		}
 	}
 
-	private _checkSession() {
+	private _checkSession(): void {
 		if (this._jwt) {
 			const refreshPayload = jwtTokenRefresh(jwtSecret, this._jwt);
 			if (refreshPayload) {
@@ -66,8 +66,12 @@ export default class Client extends Subject<any> {
 				this._user = user;
 				this.next(JSON.stringify({type: "refresh", payload: refreshPayload}));
 			}
+
+			clearTimeout(this._timeout);
+			this._timeout = setTimeout(() => {
+				this._checkSession();
+			}, 299000);	// 299000 = 4min 59sec
 		}
-		setTimeout(() => this._checkSession(), 299000);	// 4min 59sec
 	}
 
 	private set location(location: string) {
@@ -117,7 +121,7 @@ export default class Client extends Subject<any> {
 		}
 	}
 
-	public destroy() {
+	public destroy(): void {
 		const subscriptionsKeys = this._subscriptions.keys();
 		for (const subscriptionKey of subscriptionsKeys) {
 			let subscription = this._subscriptions.get(subscriptionKey);

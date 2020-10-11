@@ -8,7 +8,8 @@ import jwtTokenTimes from "./_f.jwt.token.times";
 const authenticate = async (providerUser: any): Promise<any | null> => {
 	if (!providerUser) return null;
 
-	let dbUser = await User.findOne({providerId: providerUser.providerId});
+	const {provider, providerId} = providerUser
+	let dbUser = await User.findOne({provider, providerId});
 	if (!dbUser) {
 		dbUser = new User(providerUser);
 		dbUser = await dbUser.save();
