@@ -28,7 +28,6 @@ export default class Client extends Subject<any> {
 		super();
 		this._stores = new Map<string, AStore>();
 		this._subscriptions = new Map<string, Subscription>();
-		this._checkSession();
 	}
 
 	public async consume(message: any): Promise<void> {
@@ -39,6 +38,7 @@ export default class Client extends Subject<any> {
 				const user = jsonwebtoken.verify(message.jwt, jwtSecret);
 				this._jwt = message.jwt;
 				this._user = user;
+				this._checkSession();
 				// TODO: store user in clients collection
 				return;
 
