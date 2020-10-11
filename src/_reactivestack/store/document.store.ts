@@ -37,7 +37,8 @@ export default class DocumentStore extends AStore {
 	protected async load(change: any): Promise<void> {
 		if (_.isEmpty(this._config)) return this.emit();
 
-		const document = change.fullDocument;
+		const {operationType, fullDocument: document} = change;
+		if ('delete' === operationType) return this.emit(null);
 
 		let data;
 		const id = __getIdFromQuery(this._query);
@@ -49,13 +50,8 @@ export default class DocumentStore extends AStore {
 	}
 
 	private _pipeFilter(change: any): boolean {
-		const document = change.fullDocument;
-
-		// TODO: handle deletions?
-		if (!document) {
-			console.error("_pipeFilter error: missing document:", change);
-			return false;
-		}
+		const {operationType, fullDocument: document} = change;
+		if (!document && 'delete' === operationType) return true;
 
 		const id = __getIdFromQuery(this._query);
 		if (id) {
@@ -72,8 +68,8 @@ export default class DocumentStore extends AStore {
 		return true;
 	}
 
-	private async _loadDocumentById(id:string): Promise<any> {
-		return await this._model.findById(id, this._fields);
+	private async _loadDocumentById(id: string): Promise<any> {
+		return this._model.findById(id, this._fields);
 	}
 
 	private async _loadSortedFirstDocument(): Promise<any> {
@@ -85,7 +81,7 @@ export default class DocumentStore extends AStore {
 	}
 
 	private async _loadDocument(): Promise<any> {
-		return await this._model.findOne(this._query, this._fields);
+		return this._model.findOne(this._query, this._fields);
 	}
 
 }

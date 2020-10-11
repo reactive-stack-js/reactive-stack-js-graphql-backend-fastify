@@ -32,7 +32,7 @@ export default class Client extends Subject<any> {
 	}
 
 	public async consume(message: any): Promise<void> {
-		console.log(" - Client::consume received message", message.type);
+		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
 			case "register":
