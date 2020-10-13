@@ -2,7 +2,7 @@
 "use strict";
 
 import {model, Schema} from "mongoose";
-import uuidv4 from "../util/_f.unique.id";
+import uuidv4 from "../_reactivestack/util/_f.unique.id";
 import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
 import {GraphQLString} from "graphql";
 import {GraphQLJSONObject} from "graphql-type-json";

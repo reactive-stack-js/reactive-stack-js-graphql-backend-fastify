@@ -15,13 +15,14 @@ import fastifyHelmet from "fastify-helmet";
 import * as fastifyJwt from "fastify-jwt";
 import * as fastifyWebsocket from "fastify-websocket";
 
-// IMPORTANT: must execute dotenv before importing anything that depends on process.env (like MongoDBConnector, for example)
 dotenv.config({path: ".env.local"});
+// IMPORTANT: must execute dotenv before importing anything
+// that depends on process.env (like MongoDBConnector, for example)
 
 import GQLSchema from "./graphql.schema";
 import MongoDBConnector from "./mongodb.connector";
 
-import addRoutes from "./util/_f.add.routes";
+import addRoutes from "./_reactivestack/_f.add.routes";
 import websocket from "./_reactivestack/_f.websocket";
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false})
@@ -29,9 +30,7 @@ const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify
 server.register(fastifyGQL, {
 	schema: GQLSchema,
 	queryDepth: 7,					// if smaller than 7, playground throws an error
-
-	// graphiql: true,
-	graphiql: "playground",
+	graphiql: "playground",			// OR graphiql: true, (but then without the playgroundSettings)
 	playgroundSettings: {
 		"editor.fontSize": 13,
 		"editor.theme": "light",
@@ -52,7 +51,8 @@ server.register(fastifyGQL, {
 	}
 });
 
-// @ts-ignore
+server.register(fastifyBlipp);
+server.register(fastifyWebsocket);
 server.register(fastifyJwt, {secret: process.env.JWT_SECRET});
 server.register(fastifyCors, {
 	// put your options here
@@ -61,8 +61,8 @@ server.register(fastifyCors, {
 		"http://localhost:3008"
 	]
 });
-// NOTE: do this only on NON-PROD environments!
-server.register(fastifyHelmet, {
+
+server.register(fastifyHelmet, {	// NOTE: do this only on NON-PROD environments!
 	contentSecurityPolicy: {
 		directives: {
 			defaultSrc: [`"self"`],
@@ -72,10 +72,8 @@ server.register(fastifyHelmet, {
 		},
 	},
 });
-server.register(fastifyBlipp);
-server.register(fastifyWebsocket);
 
-const addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse>): void => {
+const _addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse>): void => {
 	srv.addHook("onRequest", async (request, reply) => {
 		try {
 			await request.jwtVerify();
@@ -85,7 +83,7 @@ const addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse
 	});
 };
 
-const addWebSocketListener = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse>): void => {
+const _addWebSocketListener = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse>): void => {
 	srv.get("/ws", {websocket: true}, websocket);
 };
 
@@ -94,9 +92,9 @@ const startFastifyServer = async () => {
 	try {
 		MongoDBConnector.init();
 
-		addJWTHook(server);
+		_addJWTHook(server);
 
-		addWebSocketListener(server);
+		_addWebSocketListener(server);
 
 		addRoutes(server, path.join(__dirname, "routes"));
 

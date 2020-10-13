@@ -8,10 +8,12 @@ import * as _ from "lodash";
 import {Model} from "mongoose";
 import {composeWithMongoose} from "graphql-compose-mongoose";
 
+import processFolder from "./_f.process.folder";
 import graphQLQueryFactory from "./_f.query.factory";
-import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from "./_f.type.composer.fields.factory";
-import Draft, {GraphQLDraftType} from "../models/draft";
 import CollectionsModelsMap from "../_reactivestack/collections.models.map";
+import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from "./_f.type.composer.fields.factory";
+
+import Draft, {GraphQLDraftType} from "../models/draft";
 
 const _metaData = (model: Model<any>): any => {
 	const modelName = model.modelName;
@@ -46,24 +48,6 @@ const _processFile = (root: any, folder: string, file: string): any => {
 
 	const fields = graphQLQueryFactory(name, model, type);
 	return {...root, ...fields};
-};
-
-const _processFolder = (root: any, folder: string): any => {
-	const fileNames = fs.readdirSync(folder);
-	const files = _.filter(fileNames, (fileName) => !fs.lstatSync(path.join(folder, fileName)).isDirectory());
-	files.forEach((file) => {
-		const ext = path.extname(file);
-		if (ext !== ".ts" && ext !== ".js") return;
-
-		root = _processFile(root, folder, file);
-	});
-
-	const folders = _.filter(fileNames, (fileName) => fs.lstatSync(path.join(folder, fileName)).isDirectory());
-	folders.forEach((subfolder) => {
-		root = _processFolder(root, subfolder);
-	});
-
-	return root;
 };
 
 let reverseRefs: any[] = [];
@@ -102,7 +86,7 @@ const _processReverseRefs = (): void => {
 
 const graphQLRootQueryFactory = (folder: string): any => {
 	reverseRefs = [];
-	const rootQuery = _processFolder({}, folder);
+	const rootQuery = processFolder({}, folder, _processFile);
 	_processReverseRefs();
 	return rootQuery;
 };

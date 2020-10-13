@@ -10,7 +10,7 @@ import {Subject, Subscription} from "rxjs";
 import AStore from "./store/_a.store";
 import storeFactory from "./store/_f.store.factory";
 import StoreSubscriptionUpdateType from "./store/_t.store.subscription.update";
-import jwtTokenRefresh from "../util/_f.jwt.token.refresh";
+import jwtTokenRefresh from "./util/_f.jwt.token.refresh";
 
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET;

@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import * as _ from "lodash";
+import processFolder from "./_f.process.folder";
 
 const _processFile = (root: any, folder: string, file: string): any => {
 	const fullPath = path.join(folder, file);
@@ -29,24 +30,7 @@ const _processFile = (root: any, folder: string, file: string): any => {
 	return {...root, ...fixed};
 };
 
-const _processFolder = (root: any, folder: string): any => {
-	const fileNames = fs.readdirSync(folder);
-	const files = _.filter(fileNames, (fileName) => !fs.lstatSync(path.join(folder, fileName)).isDirectory());
-	files.forEach((file) => {
-		const ext = path.extname(file);
-		if (ext !== ".ts" && ext !== ".js") return;
-		root = _processFile(root, folder, file);
-	});
-
-	const folders = _.filter(fileNames, (fileName) => fs.lstatSync(path.join(folder, fileName)).isDirectory());
-	folders.forEach((subfolder) => {
-		root = _processFolder(root, subfolder);
-	});
-
-	return root;
-};
-
 const graphQLRootMutationsFactory = (folder: string): any => {
-	return _processFolder({}, folder);
+	return processFolder({}, folder, _processFile);
 };
 export default graphQLRootMutationsFactory;

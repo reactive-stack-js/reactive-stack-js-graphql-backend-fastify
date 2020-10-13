@@ -3,7 +3,7 @@
 
 import axios from "axios";
 
-import authenticate from "../../util/_f.authenticate";
+import authenticate from "../../_reactivestack/_f.authenticate";
 
 const FB_APP_ID = process.env.FB_APP_ID;
 const FB_APP_SECRET = process.env.FB_APP_SECRET;
