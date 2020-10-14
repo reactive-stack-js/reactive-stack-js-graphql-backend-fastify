@@ -24,7 +24,6 @@ class ObservableModel extends Subject<any> {
 	}
 }
 
-// TODO: add USER param and CHECK PERMISSIONS!
 class ObservableModelsMap {
 
 	private static _instance: ObservableModelsMap;
