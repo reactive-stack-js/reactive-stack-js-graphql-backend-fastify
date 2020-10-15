@@ -89,12 +89,12 @@ export default class Client extends Subject<any> {
 
 	private removeSubscription(target: string): void {
 		let store = this._stores.get(target);
-		store.destroy();
+		if (store) store.destroy();
 		store = null;
 		this._stores.delete(target);
 
 		let subscription = this._subscriptions.get(target);
-		subscription.unsubscribe();
+		if (subscription) subscription.unsubscribe();
 		subscription = null;
 		this._subscriptions.delete(target);
 	}

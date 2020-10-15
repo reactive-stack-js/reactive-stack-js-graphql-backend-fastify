@@ -28,9 +28,9 @@ export default (connection: SocketStream): void => {
 
 	socket.on("close", () => {
 		console.log("[WS] Client disconnected", mySocketID);
-		subscription.unsubscribe();
+		if (subscription) subscription.unsubscribe();
 		subscription = null;
-		client.destroy();
+		if (client) client.destroy();
 		client = null;
 	});
 
