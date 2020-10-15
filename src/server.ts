@@ -62,15 +62,17 @@ server.register(fastifyCors, {
 	]
 });
 
-server.register(fastifyHelmet, {	// NOTE: do this only on NON-PROD environments!
-	contentSecurityPolicy: {
-		directives: {
-			defaultSrc: [`"self"`],
-			styleSrc: ["*", `https: "unsafe-inline"`],
-			scriptSrc: ["*", `https: "unsafe-inline" "unsafe-eval"`],
-			imgSrc: ["*", "data:"]
-		},
-	},
+// NOTE: do this only on NON-PROD environments!
+server.register(fastifyHelmet, {
+	contentSecurityPolicy: false
+	// 	{
+	// 	directives: {
+	// 		defaultSrc: ['"self"'],
+	// 		styleSrc: ["*", 'https: "unsafe-inline"'],
+	// 		scriptSrc: ["*", 'https: "unsafe-inline" "unsafe-eval"'],
+	// 		imgSrc: ["*", "data:"]
+	// 	},
+	// },
 });
 
 const _addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse>): void => {

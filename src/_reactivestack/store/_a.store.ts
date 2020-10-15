@@ -9,9 +9,9 @@ import * as jsondiffpatch from "jsondiffpatch";
 export enum EStoreType { DOCUMENT, COLLECTION}
 
 // tslint:disable-next-line:variable-name
-const _baseMessage = (field: string): any => ({
+const _baseMessage = (target: string): any => ({
 	type: "update",
-	path: field,
+	target,
 	payload: {}
 });
 
