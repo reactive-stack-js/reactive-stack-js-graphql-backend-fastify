@@ -65,6 +65,6 @@ module.exports = {
 			return reply.send({jwt, user});
 		}
 
-		reply.send({error: "auch"});
+		reply.send({error: "oops"});
 	},
 };
