@@ -9,7 +9,7 @@ import {Subject, Subscription} from "rxjs";
 import AStore from "./store/_a.store";
 import storeFactory from "./store/_f.store.factory";
 import {StoreSubscriptionUpdateType} from "./store/_t.store";
-import jwtTokenRefresh from "./auth/_f.jwt.token.refresh";
+import jwtTokenRefresh from "../_auth/_f.jwt.token.refresh";
 
 const jwtSecret = process.env.JWT_SECRET;
 
