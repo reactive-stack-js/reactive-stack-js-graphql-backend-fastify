@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 "use strict";
+
 import * as _ from "lodash";
 
 import User from "../models/user";

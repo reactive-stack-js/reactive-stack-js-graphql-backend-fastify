@@ -3,8 +3,8 @@
 
 import * as _ from "lodash";
 import {Subject} from "rxjs";
-import {ChangeStream} from "mongodb";
 import {Model} from "mongoose";
+import {ChangeStream} from "mongodb";
 
 // TODO: add USER param to be able to CHECK PERMISSIONS in ObservableModelsMap
 

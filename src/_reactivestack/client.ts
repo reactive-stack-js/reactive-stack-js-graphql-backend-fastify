@@ -3,16 +3,14 @@
 
 import Timeout = NodeJS.Timeout;
 
-import * as dotenv from "dotenv";
 import * as jsonwebtoken from "jsonwebtoken";
 import {Subject, Subscription} from "rxjs";
 
 import AStore from "./store/_a.store";
 import storeFactory from "./store/_f.store.factory";
-import StoreSubscriptionUpdateType from "./store/_t.store.subscription.update";
+import {StoreSubscriptionUpdateType} from "./store/_t.store";
 import jwtTokenRefresh from "./util/_f.jwt.token.refresh";
 
-dotenv.config({path: ".env.local"});
 const jwtSecret = process.env.JWT_SECRET;
 
 export default class Client extends Subject<any> {

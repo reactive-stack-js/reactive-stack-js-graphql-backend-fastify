@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import {Model} from "mongoose";
 import {ObjectTypeComposer} from "graphql-compose";
 import {composeWithMongoose} from "graphql-compose-mongoose";
+
 import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from "./_f.type.composer.fields.factory";
 
 const _createTargetName = (name: string): string => {

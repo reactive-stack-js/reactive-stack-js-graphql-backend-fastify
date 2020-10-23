@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 "use strict";
+
 import {SocketStream} from "fastify-websocket";
 
 import Client from "./client";

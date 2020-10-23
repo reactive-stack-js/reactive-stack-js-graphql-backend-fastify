@@ -14,7 +14,8 @@
 		"clean": "tslint --config tslint-imports.json --fix --project .",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
 		"last": "yarn upgrade-interactive --latest",
-		"up": "yarn upgrade-interactive"
+		"up": "yarn upgrade-interactive",
+		"print": "dir src /s /b > print.txt"
 	},
 	"dependencies": {
 		"@types/json-diff": "^0.5.0",

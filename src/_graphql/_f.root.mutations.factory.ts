@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 "use strict";
 
-import * as fs from "fs";
 import * as path from "path";
 
 import * as _ from "lodash";

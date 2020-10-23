@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 "use strict";
 
-type StoreSubscriptionUpdateType = {
+export type StoreScopeType = "many" | "one";
+
+export type StoreSubscriptionUpdateType = {
 	target: string,
-	scope: "many" | "one",
+	scope: StoreScopeType,
 	config: any,
 
 	// use if mongodb is the only reactive source
@@ -15,4 +17,3 @@ type StoreSubscriptionUpdateType = {
 	// 	name: string			// collectionName
 	// }
 };
-export default StoreSubscriptionUpdateType;

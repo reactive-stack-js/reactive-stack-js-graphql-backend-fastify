@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 "use strict";
 
-// import * as _ from "lodash";
 import {Model} from "mongoose";
 import {GraphQLJSONObject} from "graphql-type-json";
 import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from "graphql";
