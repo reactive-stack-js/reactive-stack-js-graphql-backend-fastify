@@ -12,7 +12,7 @@ import storeFactory from "./store/_f.store.factory";
 import StoreSubscriptionUpdateType from "./store/_t.store.subscription.update";
 import jwtTokenRefresh from "./util/_f.jwt.token.refresh";
 
-dotenv.config();
+dotenv.config({path: ".env.local"});
 const jwtSecret = process.env.JWT_SECRET;
 
 export default class Client extends Subject<any> {
