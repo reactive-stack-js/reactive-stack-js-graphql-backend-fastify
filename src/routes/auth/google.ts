@@ -3,28 +3,29 @@
 
 import axios from "axios";
 
-import authenticate from "../../_reactivestack/_f.authenticate";
+import authenticate from "../../_reactivestack/auth/_f.authenticate";
 
 const GG_APP_ID = process.env.GG_APP_ID;
 const GG_APP_SECRET = process.env.GG_APP_SECRET;
 
 const _userAccessToken = async (code: string, scope: string, redirectUri: string): Promise<any> => {
-	const ggurl = `https://oauth2.googleapis.com/token` +
-		`?client_id=${GG_APP_ID}` +
+	const url = `https://oauth2.googleapis.com/token` +
+		`?grant_type=authorization_code` +
+		`&client_id=${GG_APP_ID}` +
 		`&client_secret=${GG_APP_SECRET}` +
 		`&redirect_uri=${redirectUri}` +
-		`&grant_type=authorization_code` +
 		`&code=${code}`;
-	const response = await axios.post(ggurl);
+	const response = await axios.post(url);
 
-	const data = response.data;
+	const {data} = response;
+	console.log({data});
 	if (!!data && !!data.id_token) return data;
 	return null;
 };
 
 const _userData = async (accessToken: string): Promise<any> => {
-	const ggurl = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`;
-	const response = await axios.get(ggurl);
+	const url = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`;
+	const response = await axios.get(url);
 	const {data} = response;
 
 	return {

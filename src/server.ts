@@ -69,7 +69,7 @@ const _addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerRespons
 		try {
 			await request.jwtVerify();
 		} catch (err) {
-			reply.send(err);
+			// reply.send(err);
 		}
 	});
 };

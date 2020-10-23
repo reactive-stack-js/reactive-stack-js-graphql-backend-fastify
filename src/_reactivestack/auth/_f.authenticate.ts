@@ -3,8 +3,8 @@
 
 import * as _ from "lodash";
 
-import User from "../models/user";
-import jwtTokenTimes from "./util/_f.jwt.token.times";
+import User from "../../models/user";
+import jwtTokenTimes from "./_f.jwt.token.times";
 
 const authenticate = async (providerUser: any): Promise<any | null> => {
 	if (!providerUser) return null;
