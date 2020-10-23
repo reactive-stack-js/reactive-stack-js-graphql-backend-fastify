@@ -1,29 +1,30 @@
 #!/usr/bin/env node
 "use strict";
 
-import {AddressInfo} from "net";
-import {Server, IncomingMessage, ServerResponse} from "http"
 import * as path from "path";
 import * as dotenv from "dotenv";
+
+import {AddressInfo} from "net";
+import {Server, IncomingMessage, ServerResponse} from "http";
 
 dotenv.config({path: ".env.local"});
 // IMPORTANT: must execute dotenv before importing anything
 // that depends on process.env (like MongoDBConnector, for example)
 
-import {fastify, FastifyInstance} from "fastify";
+import {ContextConfigDefault, fastify, FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
+import {RouteGenericInterface} from "fastify/types/route";
 
+import * as fastifyJwt from "fastify-jwt";
+import * as fastifyWebsocket from "fastify-websocket";
 import fastifyGQL from "fastify-gql";
 import fastifyCors from "fastify-cors";
 import fastifyBlipp from "fastify-blipp";
 import fastifyHelmet from "fastify-helmet";
-import * as fastifyJwt from "fastify-jwt";
-import * as fastifyWebsocket from "fastify-websocket";
 
 import GQLSchema from "./graphql.schema";
-import MongoDBConnector from "./_reactivestack/mongodb.connector";
-
-import addRoutes from "./_reactivestack/util/_f.add.routes";
 import websocket from "./_reactivestack/_f.websocket";
+import addRoutes from "./_reactivestack/util/_f.add.routes";
+import MongoDBConnector from "./_reactivestack/mongodb.connector";
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false})
 
@@ -54,6 +55,7 @@ server.register(fastifyGQL, {
 server.register(fastifyBlipp);
 server.register(fastifyWebsocket);
 server.register(fastifyJwt, {secret: process.env.JWT_SECRET});
+server.register(fastifyHelmet, {contentSecurityPolicy: false});	// NOTE: do this only on NON-PROD environments!
 server.register(fastifyCors, {
 	// put your options here
 	origin: [
@@ -62,25 +64,12 @@ server.register(fastifyCors, {
 	]
 });
 
-// NOTE: do this only on NON-PROD environments!
-server.register(fastifyHelmet, {
-	contentSecurityPolicy: false
-	// 	{
-	// 	directives: {
-	// 		defaultSrc: ['"self"'],
-	// 		styleSrc: ["*", 'https: "unsafe-inline"'],
-	// 		scriptSrc: ["*", 'https: "unsafe-inline" "unsafe-eval"'],
-	// 		imgSrc: ["*", "data:"]
-	// 	},
-	// },
-});
-
 const _addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerResponse>): void => {
-	srv.addHook("onRequest", async (request, reply) => {
+	srv.addHook("onRequest", async (request: FastifyRequest<RouteGenericInterface, Server, IncomingMessage>, reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, ContextConfigDefault>) => {
 		try {
 			await request.jwtVerify();
 		} catch (err) {
-			// reply.send(err);
+			reply.send(err);
 		}
 	});
 };
@@ -115,5 +104,5 @@ startFastifyServer()
 	.then(() => ({}))
 	.catch((err) => console.error("Server Error:", err));
 
-process.on("uncaughtException", (reason: string, p: any) => console.error("Uncaught Exception at:", p, "reason:", reason));
-process.on("unhandledRejection", (reason: string, p: any) => console.error("Unhandled Rejection at:", p, "reason:", reason));
+process.on("uncaughtException", (reason: string, p: Promise<any>): void => console.error("Uncaught Exception at:", p, "reason:", reason));
+process.on("unhandledRejection", (reason: string, p: Promise<any>): void => console.error("Unhandled Rejection at:", p, "reason:", reason));
