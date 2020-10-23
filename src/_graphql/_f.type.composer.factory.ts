@@ -34,7 +34,9 @@ const graphQLTypeComposerFactory = (model: Model<any>, name: string, additionalF
 			schemaFields.push({name: key, target: targetName, type, model});
 		}
 	});
-	if (!_.isEmpty(schemaFields)) tc.addFields(typeComposerFieldsFactory(schemaFields));
+	if (!_.isEmpty(schemaFields)) {
+		tc.addFields(typeComposerFieldsFactory(schemaFields));
+	}
 
 	return tc;
 };

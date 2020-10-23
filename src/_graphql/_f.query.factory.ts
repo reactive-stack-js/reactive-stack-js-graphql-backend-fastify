@@ -9,7 +9,7 @@ import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from "graphql";
 const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjectType) => {
 	const queries: any = {};
 
-	// Single by idJ
+	// Single by id or query
 	queries[name] = {
 		type,
 		args: {id: {type: GraphQLID}, query: {type: GraphQLJSONObject}},
@@ -22,7 +22,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 		}
 	};
 
-	// List by filter, pageSize, page and with sort
+	// List by filter, sort, pageSize and page#
 	queries[name + "s"] = {
 		type: new GraphQLList(type),
 		args: {
@@ -49,7 +49,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 		}
 	};
 
-	// List count by filter
+	// Count by filter
 	queries[name + "sCount"] = {
 		type: GraphQLInt,
 		args: {
