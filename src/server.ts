@@ -22,7 +22,7 @@ import fastifyBlipp from 'fastify-blipp';
 import fastifyHelmet from 'fastify-helmet';
 
 import GQLSchema from './graphql.schema';
-import websocket from './_reactivestack/_f.websocket';
+import websocket from './_f.websocket';
 import addRoutes from './_reactivestack/util/_f.add.routes';
 import MongoDBConnector from './_reactivestack/mongodb.connector';
 

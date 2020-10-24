@@ -3,27 +3,25 @@
 
 import Timeout = NodeJS.Timeout;
 
-import * as jsonwebtoken from 'jsonwebtoken';
+import {get} from 'lodash';
 import {Subject, Subscription} from 'rxjs';
 
 import AStore from './store/_a.store';
 import storeFactory from './store/_f.store.factory';
 import {StoreSubscriptionUpdateType} from './store/_t.store';
-import jwtTokenRefresh from '../_auth/_f.jwt.token.refresh';
-
-const jwtSecret = process.env.JWT_SECRET;
+import IUserManager from "./util/_i.user.manager";
 
 export default class Client extends Subject<any> {
-	private _jwt: string;
-	private _user: any;
+	private _userManager: IUserManager;
 
 	private _location: string;
 	private _stores: Map<string, AStore>;
 	private _subscriptions: Map<string, Subscription>;
 	private _timeout: Timeout;
 
-	public constructor() {
+	public constructor(userManager: IUserManager) {
 		super();
+		this._userManager = userManager;
 		this._stores = new Map<string, AStore>();
 		this._subscriptions = new Map<string, Subscription>();
 	}
@@ -32,12 +30,9 @@ export default class Client extends Subject<any> {
 		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
-			case 'register':
-				const user = jsonwebtoken.verify(message.jwt, jwtSecret);
-				this._jwt = message.jwt;
-				this._user = user;
+			case 'authenticate':
+				this._userManager.connected(message.jwt);
 				this._checkSession();
-				// TODO: store user in clients collection
 				return;
 
 			case 'location':
@@ -56,20 +51,15 @@ export default class Client extends Subject<any> {
 	}
 
 	private _checkSession(): void {
-		if (this._jwt) {
-			const refreshPayload = jwtTokenRefresh(jwtSecret, this._jwt);
-			if (refreshPayload) {
-				const {jwt, user} = refreshPayload;
-				this._jwt = jwt;
-				this._user = user;
-				this.next({type: 'refresh', payload: refreshPayload});
-			}
+		const check = this._userManager.checkSession();
+		if (check) this.next(check);
 
-			clearTimeout(this._timeout);
-			this._timeout = setTimeout(() => {
-				this._checkSession();
-			}, 299000); // 299000 = 4min 59sec
-		}
+		const refreshIn = get(check, 'refresh_in', 299000);	 // 299000 = 4min 59sec
+
+		clearTimeout(this._timeout);
+		this._timeout = setTimeout(() => {
+			this._checkSession();
+		}, refreshIn);
 	}
 
 	private set location(location: string) {
@@ -82,7 +72,7 @@ export default class Client extends Subject<any> {
 		this._stores = new Map<string, AStore>();
 		this._subscriptions = new Map<string, Subscription>();
 
-		// TODO: update user in clients collection
+		this._userManager.location(location);
 	}
 
 	private removeSubscription(target: string): void {
@@ -136,6 +126,8 @@ export default class Client extends Subject<any> {
 		}
 		this._stores.clear();
 		this._stores = null;
+
+		this._userManager.disconnected();
 
 		clearTimeout(this._timeout);
 	}
