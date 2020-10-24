@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import * as _ from 'lodash';
+import {isEmpty} from 'lodash';
 import {Model} from 'mongoose';
 
 import AStore, {EStoreType} from './_a.store';
@@ -15,14 +15,15 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model).subscribe({
-			next: (c: any) => this.load()
-		});
+		this.subscription = observableModel(this.model)
+			.subscribe({
+				next: (c: any): Promise<void> => this.load()
+			});
 	}
 
 	protected async load(): Promise<void> {
 		// console.log(" - CollectionSection load", this._field, this._query, this._sort, this._fields, this._paging);
-		if (_.isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emit();
 
 		let data = [];
 		const total = await this._model.countDocuments(this._query);
