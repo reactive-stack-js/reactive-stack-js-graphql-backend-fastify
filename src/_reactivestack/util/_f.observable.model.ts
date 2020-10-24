@@ -6,8 +6,6 @@ import {Subject} from 'rxjs';
 import {Model} from 'mongoose';
 import {ChangeStream} from 'mongodb';
 
-// TODO: add USER param to be able to CHECK PERMISSIONS in ObservableModelsMap
-
 class ObservableModel extends Subject<any> {
 	private _model: any;
 	private _stream: ChangeStream;
@@ -48,7 +46,3 @@ class ObservableModelsMap {
 
 const observableModel = (model: any): ObservableModel => ObservableModelsMap.get(model);
 export default observableModel;
-
-// @TODO nice2have: stop stream when no subscribers / restart stream on subscribe... not MVP:
-// this._stream.close();
-// observableModels.delete(id);
