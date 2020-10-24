@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 "use strict";
 
+import {v4} from "uuid";
 import {SocketStream} from "fastify-websocket";
 
 import Client from "./client";
-import uuidv4 from "./util/_f.unique.id";
 
 export default (connection: SocketStream): void => {
 	const {socket} = connection;
 	connection.resume();
 
-	const mySocketID = uuidv4();
+	const mySocketID = v4();
 	console.log("[WS] Client connected", mySocketID);
 	socket.send(JSON.stringify({type: "socketId", socketId: mySocketID}));
 
