@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import * as _ from "lodash";
-import {Model, Types} from "mongoose";
-import {GraphQLObjectType} from "graphql";
+import * as _ from 'lodash';
+import {Model, Types} from 'mongoose';
+import {GraphQLObjectType} from 'graphql';
 
 export type GraphQLTypeFactoryFieldType = {
-	name: string,
-	target: string,
-	type: GraphQLObjectType | [GraphQLObjectType],
-	model: Model<any>,
-	through?: string
-}
+	name: string;
+	target: string;
+	type: GraphQLObjectType | [GraphQLObjectType];
+	model: Model<any>;
+	through?: string;
+};
 
 const typeComposerFieldsFactory = (fields: GraphQLTypeFactoryFieldType[]): {} => {
 	const typeComposerFields: any = {};
@@ -24,16 +24,14 @@ const typeComposerFieldsFactory = (fields: GraphQLTypeFactoryFieldType[]): {} =>
 
 			if (!_.isArray(type)) {
 				typeComposerFields[target].resolve = (instance: any): any => {
-					return (instance[name]) ? model.findOne(instance[name]) : null;
-				}
-
+					return instance[name] ? model.findOne(instance[name]) : null;
+				};
 			} else {
 				typeComposerFields[target].resolve = (instance: any): any => {
 					if (_.isEmpty(instance[name])) return [];
 					return model.find({_id: instance[name]});
 				};
 			}
-
 		} else {
 			if (_.isFunction(type)) type = type();
 			if (_.isFunction(model)) model = model();
@@ -47,7 +45,7 @@ const typeComposerFieldsFactory = (fields: GraphQLTypeFactoryFieldType[]): {} =>
 				} else {
 					return await model.find(query);
 				}
-			}
+			};
 		}
 	});
 

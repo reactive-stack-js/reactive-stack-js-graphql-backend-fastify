@@ -1,26 +1,25 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import * as _ from "lodash";
-import {Model, Types} from "mongoose";
-import {GraphQLJSONObject} from "graphql-type-json";
-import {GraphQLBoolean, GraphQLID, GraphQLString} from "graphql";
+import * as _ from 'lodash';
+import {Model, Types} from 'mongoose';
+import {GraphQLJSONObject} from 'graphql-type-json';
+import {GraphQLBoolean, GraphQLID, GraphQLString} from 'graphql';
 
-import CollectionsModelsMap from "../_reactivestack/util/collections.models.map";
-import Draft from "../models/draft";
+import CollectionsModelsMap from '../_reactivestack/util/collections.models.map';
+import Draft from '../models/draft';
 
-const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), "itemId");
+const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), 'itemId');
 
-const _getUserId = (context: any): string => _.get(context, "reply.request.user.id", null);
+const _getUserId = (context: any): string => _.get(context, 'reply.request.user.id', null);
 
 // TODO: extend to verify permissions, see below for usage
 const _authorize = (context: any): boolean => {
-	const userId = _.get(context, "reply.request.user", null);
+	const userId = _.get(context, 'reply.request.user', null);
 	return !!userId;
-}
+};
 
 module.exports = {
-
 	draftFocus: {
 		type: GraphQLBoolean,
 		args: {
@@ -37,11 +36,11 @@ module.exports = {
 			const draft = await Draft.findOne({_id: draftId});
 			if (!draft) throw new Error(`Draft does not exist: ${draftId}`);
 
-			let meta = _.get(draft, "meta", {});
+			let meta = _.get(draft, 'meta', {});
 			if (_.get(meta, field)) return false;
 
 			_.each(meta, (val, id) => {
-				if (_.get(val, "user", false) === userId) meta = _.omit(meta, id);
+				if (_.get(val, 'user', false) === userId) meta = _.omit(meta, id);
 			});
 			_.set(meta, field, {user: userId});
 			await Draft.updateOne({_id: draftId}, {$set: {meta}});
@@ -63,11 +62,11 @@ module.exports = {
 			const draft: any = await Draft.findOne({_id: draftId});
 			if (!draft) throw new Error(`Draft does not exist: ${draftId}`);
 
-			const meta = _.get(draft, "meta", null);
+			const meta = _.get(draft, 'meta', null);
 			if (meta) {
 				const curr = _.get(meta, field);
 				if (curr) {
-					const focusedBy = _.get(curr, "user");
+					const focusedBy = _.get(curr, 'user');
 					if (focusedBy !== userId) return false;
 					const metaData = _.omit(meta, field);
 					await Draft.updateOne({_id: draftId}, {$set: {meta: metaData}});
@@ -81,7 +80,7 @@ module.exports = {
 		type: GraphQLJSONObject,
 		args: {
 			draftId: {type: GraphQLID},
-			change: {type: GraphQLJSONObject}	// field, value
+			change: {type: GraphQLJSONObject} // field, value
 		},
 		resolve: async (root: any, args: any, context: any) => {
 			const userId = _getUserId(context);
@@ -100,7 +99,7 @@ module.exports = {
 				};
 				return Draft.updateOne({_id: draftId}, {$set: updater});
 			}
-			return {draftId, change: {field, value}, userId, error: "Draft does not exist!"};
+			return {draftId, change: {field, value}, userId, error: 'Draft does not exist!'};
 		}
 	},
 
@@ -150,7 +149,7 @@ module.exports = {
 			if (!existing) {
 				const draft: any = {_id: Types.ObjectId(), collectionName, sourceDocumentId};
 				if (hasItemId) draft.sourceDocumentItemId = document.itemId;
-				draft.document = _.omit(document, ["_id", "updatedAt", "updatedBy"]);
+				draft.document = _.omit(document, ['_id', 'updatedAt', 'updatedBy']);
 				draft.meta = {};
 				draft.createdBy = userId;
 				existing = await Draft.create(draft);
@@ -179,12 +178,9 @@ module.exports = {
 			const model = CollectionsModelsMap.getModelByCollection(collectionName);
 			if (!model) throw new Error(`Model not found for collectionName ${collectionName}`);
 
-			const document = _.omit(draft.document, ["_id", "createdAt"]);
+			const document = _.omit(draft.document, ['_id', 'createdAt']);
 
-			let max: any = await model
-				.find({itemId: document.itemId})
-				.sort({iteration: -1})
-				.limit(1);
+			let max: any = await model.find({itemId: document.itemId}).sort({iteration: -1}).limit(1);
 			max = _.first(max);
 			await model.updateOne({_id: max._id}, {$set: {isLatest: false}});
 
@@ -198,5 +194,4 @@ module.exports = {
 			return dbDocument._id;
 		}
 	}
-
 };

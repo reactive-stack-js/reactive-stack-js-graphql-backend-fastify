@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-export type StoreScopeType = "many" | "one";
+export type StoreScopeType = 'many' | 'one';
 
 export type StoreSubscriptionUpdateType = {
-	target: string,
-	scope: StoreScopeType,
-	config: any,
+	target: string;
+	scope: StoreScopeType;
+	config: any;
 
 	// use if mongodb is the only reactive source
-	observe: string				// collectionName
+	observe: string; // collectionName
 
 	// use when more than one reactive source exists, to distinguish between them
 	// observe: {

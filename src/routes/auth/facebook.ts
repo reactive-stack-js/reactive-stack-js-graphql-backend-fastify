@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import axios from "axios";
+import axios from 'axios';
 
-import authenticate from "../../_auth/_f.authenticate";
+import authenticate from '../../_auth/_f.authenticate';
 
 const FB_APP_ID = process.env.FB_APP_ID;
 const FB_APP_SECRET = process.env.FB_APP_SECRET;
@@ -39,7 +39,7 @@ const _getUserData = async (id: string, accessToken: string): Promise<any> => {
 	const {data} = response;
 
 	return {
-		provider: "facebook",
+		provider: 'facebook',
 		providerId: data.id,
 		name: data.name,
 		email: data.email,
@@ -48,7 +48,7 @@ const _getUserData = async (id: string, accessToken: string): Promise<any> => {
 };
 
 module.exports = {
-	method: "POST",
+	method: 'POST',
 	handler: async (request: any, reply: any): Promise<void> => {
 		await _getFbAppAccessToken();
 		const {code, redirect_uri} = request.body;
@@ -64,6 +64,6 @@ module.exports = {
 			return reply.send({jwt, user});
 		}
 
-		reply.send({error: "oops"});
-	},
+		reply.send({error: 'oops'});
+	}
 };

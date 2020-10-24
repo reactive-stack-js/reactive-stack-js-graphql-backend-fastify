@@ -1,15 +1,16 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import axios from "axios";
+import axios from 'axios';
 
-import authenticate from "../../_auth/_f.authenticate";
+import authenticate from '../../_auth/_f.authenticate';
 
 const GG_APP_ID = process.env.GG_APP_ID;
 const GG_APP_SECRET = process.env.GG_APP_SECRET;
 
 const _getUserAccessToken = async (code: string, scope: string, redirectUri: string): Promise<any> => {
-	const url = `https://oauth2.googleapis.com/token` +
+	const url =
+		`https://oauth2.googleapis.com/token` +
 		`?grant_type=authorization_code` +
 		`&client_id=${GG_APP_ID}` +
 		`&client_secret=${GG_APP_SECRET}` +
@@ -28,7 +29,7 @@ const _getUserData = async (accessToken: string): Promise<any> => {
 	const {data} = response;
 
 	return {
-		provider: "google",
+		provider: 'google',
 		providerId: data.id,
 		name: data.name,
 		email: data.email,
@@ -37,7 +38,7 @@ const _getUserData = async (accessToken: string): Promise<any> => {
 };
 
 module.exports = {
-	method: "POST",
+	method: 'POST',
 	handler: async (request: any, reply: any): Promise<void> => {
 		const {code, scope, redirect_uri} = request.body;
 		const {access_token, expires_in} = await _getUserAccessToken(code, scope, redirect_uri);
@@ -47,6 +48,6 @@ module.exports = {
 			const jwt = await reply.jwtSign(user);
 			return reply.send({jwt, user});
 		}
-		reply.send({error: "auch"});
-	},
+		reply.send({error: 'auch'});
+	}
 };

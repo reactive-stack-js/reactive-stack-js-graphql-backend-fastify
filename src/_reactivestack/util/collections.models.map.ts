@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import * as mongoose from "mongoose";
-import {Model} from "mongoose";
+import * as mongoose from 'mongoose';
+import {Model} from 'mongoose';
 
 export default class CollectionsModelsMap {
-
 	public static addCollectionToModelMapping(model: Model<any>): void {
 		CollectionsModelsMap._models.set(model.collection.collectionName, model.modelName);
 	}
@@ -16,12 +15,11 @@ export default class CollectionsModelsMap {
 			try {
 				return mongoose.model(modelName);
 			} catch (error) {
-				console.log("CollectionsModelsMap::getModelByCollection", collectionName, {err: error});
+				console.log('CollectionsModelsMap::getModelByCollection', collectionName, {err: error});
 			}
 		}
 		return null;
 	}
 
 	private static readonly _models: Map<string, string> = new Map<string, string>();
-
 }

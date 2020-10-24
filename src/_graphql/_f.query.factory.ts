@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import {Model} from "mongoose";
-import {GraphQLJSONObject} from "graphql-type-json";
-import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from "graphql";
+import {Model} from 'mongoose';
+import {GraphQLJSONObject} from 'graphql-type-json';
+import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from 'graphql';
 
 // TODO: add permissions...
 const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjectType) => {
@@ -23,7 +23,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	};
 
 	// List by filter, sort, pageSize and page#
-	queries[name + "s"] = {
+	queries[name + 's'] = {
 		type: new GraphQLList(type),
 		args: {
 			pageSize: {type: GraphQLInt},
@@ -40,17 +40,15 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 					.find(filter)
 					.sort(sort)
 					.limit(pageSize)
-					.skip((page - 1) * pageSize,);
+					.skip((page - 1) * pageSize);
 			}
 
-			return model
-				.find(filter)
-				.sort(sort);
+			return model.find(filter).sort(sort);
 		}
 	};
 
 	// Count by filter
-	queries[name + "sCount"] = {
+	queries[name + 'sCount'] = {
 		type: GraphQLInt,
 		args: {
 			filter: {type: GraphQLJSONObject}

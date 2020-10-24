@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
 import Timeout = NodeJS.Timeout;
 
-import * as jsonwebtoken from "jsonwebtoken";
-import {Subject, Subscription} from "rxjs";
+import * as jsonwebtoken from 'jsonwebtoken';
+import {Subject, Subscription} from 'rxjs';
 
-import AStore from "./store/_a.store";
-import storeFactory from "./store/_f.store.factory";
-import {StoreSubscriptionUpdateType} from "./store/_t.store";
-import jwtTokenRefresh from "../_auth/_f.jwt.token.refresh";
+import AStore from './store/_a.store';
+import storeFactory from './store/_f.store.factory';
+import {StoreSubscriptionUpdateType} from './store/_t.store';
+import jwtTokenRefresh from '../_auth/_f.jwt.token.refresh';
 
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -32,7 +32,7 @@ export default class Client extends Subject<any> {
 		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
-			case "register":
+			case 'register':
 				const user = jsonwebtoken.verify(message.jwt, jwtSecret);
 				this._jwt = message.jwt;
 				this._user = user;
@@ -40,16 +40,16 @@ export default class Client extends Subject<any> {
 				// TODO: store user in clients collection
 				return;
 
-			case "location":
+			case 'location':
 				const {path} = message;
 				this.location = path;
 				return;
 
-			case "subscribe":
+			case 'subscribe':
 				this.updateSubscription(message);
 				return;
 
-			case "unsubscribe":
+			case 'unsubscribe':
 				this.removeSubscription(message.target);
 				return;
 		}
@@ -62,13 +62,13 @@ export default class Client extends Subject<any> {
 				const {jwt, user} = refreshPayload;
 				this._jwt = jwt;
 				this._user = user;
-				this.next(JSON.stringify({type: "refresh", payload: refreshPayload}));
+				this.next(JSON.stringify({type: 'refresh', payload: refreshPayload}));
 			}
 
 			clearTimeout(this._timeout);
 			this._timeout = setTimeout(() => {
 				this._checkSession();
-			}, 299000);	// 299000 = 4min 59sec
+			}, 299000); // 299000 = 4min 59sec
 		}
 	}
 
@@ -103,7 +103,6 @@ export default class Client extends Subject<any> {
 		let store = this._stores.get(target);
 		if (store) {
 			store.config = config;
-
 		} else {
 			store = storeFactory(scope, observe, target);
 
@@ -140,5 +139,4 @@ export default class Client extends Subject<any> {
 
 		clearTimeout(this._timeout);
 	}
-
 }

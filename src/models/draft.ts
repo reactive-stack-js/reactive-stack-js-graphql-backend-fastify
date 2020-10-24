@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import {v4} from "uuid";
-import {model, Schema} from "mongoose";
-import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
+import {v4} from 'uuid';
+import {model, Schema} from 'mongoose';
+import graphQLTypeComposerFactory from '../_graphql/_f.type.composer.factory';
 
 const DraftSchema = new Schema(
 	{
@@ -16,17 +16,17 @@ const DraftSchema = new Schema(
 	},
 	{
 		timestamps: true,
-		versionKey: false,
-	},
+		versionKey: false
+	}
 );
-const Draft = model("Draft", DraftSchema, "drafts");
+const Draft = model('Draft', DraftSchema, 'drafts');
 export default Draft;
 
-const DraftTC = graphQLTypeComposerFactory(Draft, "GraphQLDraftType");
+const DraftTC = graphQLTypeComposerFactory(Draft, 'GraphQLDraftType');
 export const GraphQLDraftType = DraftTC.getType();
 export const GraphQLDraftTypeInput = DraftTC.getInputTypeComposer().getType();
 export const graphQLMetaData = {
-	name: "draft",
+	name: 'draft',
 	model: Draft,
 	tc: DraftTC,
 	type: GraphQLDraftType

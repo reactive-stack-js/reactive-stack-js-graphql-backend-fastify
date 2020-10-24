@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import {model, Schema} from "mongoose";
+import {model, Schema} from 'mongoose';
 
 export const UserSchema = new Schema(
 	{
@@ -9,12 +9,12 @@ export const UserSchema = new Schema(
 		providerId: {type: String, required: true},
 		name: {type: String, required: true},
 		email: {type: String, required: true},
-		picture: {type: String, required: true},
+		picture: {type: String, required: true}
 	},
 	{
 		timestamps: true,
-		versionKey: false,
-	},
+		versionKey: false
+	}
 );
-const User = model("User", UserSchema, "users");
+const User = model('User', UserSchema, 'users');
 export default User;

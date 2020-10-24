@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import {model, Schema} from "mongoose";
-import Ipsum, {GraphQLIpsumType} from "./ipsum";
-import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
-import Consectetur, {GraphQLConsecteturType} from "./consectetur";
+import {model, Schema} from 'mongoose';
+import Ipsum, {GraphQLIpsumType} from './ipsum';
+import graphQLTypeComposerFactory from '../_graphql/_f.type.composer.factory';
+import Consectetur, {GraphQLConsecteturType} from './consectetur';
 
 const DolorSchema = new Schema(
 	{
@@ -13,7 +13,7 @@ const DolorSchema = new Schema(
 		iste: {type: Object},
 		ipsumId: {
 			type: Schema.Types.ObjectId,
-			ref: "Ipsum",
+			ref: 'Ipsum',
 			graphql: {
 				type: GraphQLIpsumType,
 				model: Ipsum
@@ -21,23 +21,23 @@ const DolorSchema = new Schema(
 		},
 		dolorId: {
 			type: Schema.Types.ObjectId,
-			ref: "Dolor",
+			ref: 'Dolor',
 			graphql: true
 		}
 	},
 	{
 		timestamps: true,
-		versionKey: false,
-	},
+		versionKey: false
+	}
 );
-const Dolor = model("Dolor", DolorSchema, "dolors");
+const Dolor = model('Dolor', DolorSchema, 'dolors');
 export default Dolor;
 
-const DolorTC = graphQLTypeComposerFactory(Dolor, "GraphQLDolorType");
+const DolorTC = graphQLTypeComposerFactory(Dolor, 'GraphQLDolorType');
 
 export const GraphQLDolorType = DolorTC.getType();
 export const graphQLMetaData = {
-	name: "dolor",
+	name: 'dolor',
 	model: Dolor,
 	tc: DolorTC,
 	type: GraphQLDolorType,
@@ -45,7 +45,7 @@ export const graphQLMetaData = {
 		consectetur: {
 			type: () => GraphQLConsecteturType,
 			model: () => Consectetur,
-			through: "dolorIds"
+			through: 'dolorIds'
 		}
 	}
 };

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import {model, Schema, Types} from "mongoose";
-import Dolor, {GraphQLDolorType} from "./dolor";
-import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
+import {model, Schema} from 'mongoose';
+import Dolor, {GraphQLDolorType} from './dolor';
+import graphQLTypeComposerFactory from '../_graphql/_f.type.composer.factory';
 
 const ConsecteturSchema = new Schema(
 	{
@@ -12,7 +12,7 @@ const ConsecteturSchema = new Schema(
 		voluptatem: {type: Object},
 		dolorIds: {
 			type: [Schema.Types.ObjectId],
-			ref: "Dolor",
+			ref: 'Dolor',
 			graphql: {
 				type: [GraphQLDolorType],
 				model: Dolor
@@ -21,16 +21,16 @@ const ConsecteturSchema = new Schema(
 	},
 	{
 		timestamps: true,
-		versionKey: false,
-	},
+		versionKey: false
+	}
 );
-const Consectetur = model("Consectetur", ConsecteturSchema, "consecteturs");
+const Consectetur = model('Consectetur', ConsecteturSchema, 'consecteturs');
 export default Consectetur;
 
-const ConsecteturTC = graphQLTypeComposerFactory(Consectetur, "GraphQLConsecteturType");
+const ConsecteturTC = graphQLTypeComposerFactory(Consectetur, 'GraphQLConsecteturType');
 export const GraphQLConsecteturType = ConsecteturTC.getType();
 export const graphQLMetaData = {
-	name: "consectetur",
+	name: 'consectetur',
 	model: Consectetur,
 	tc: ConsecteturTC,
 	type: GraphQLConsecteturType

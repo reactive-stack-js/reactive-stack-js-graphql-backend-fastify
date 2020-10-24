@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import * as cron from "node-cron";
-import * as dotenv from "dotenv";
+import * as cron from 'node-cron';
+import * as dotenv from 'dotenv';
 
-dotenv.config({path: ".env.local"});
+dotenv.config({path: '.env.local'});
 
 /**
  * 			# ┌────────────── second (optional)
@@ -18,10 +18,14 @@ dotenv.config({path: ".env.local"});
  * 			# * * * * * *
  */
 
-cron.schedule('*/5 * * * * *', () => {
-	console.log('running a task every 5 seconds', new Date());
-}, {
-	scheduled: true
-});
+cron.schedule(
+	'*/5 * * * * *',
+	() => {
+		console.log('running a task every 5 seconds', new Date());
+	},
+	{
+		scheduled: true
+	}
+);
 
 // TODO: process workers folder and start them all

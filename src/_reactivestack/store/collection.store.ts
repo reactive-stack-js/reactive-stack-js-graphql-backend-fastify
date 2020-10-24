@@ -1,14 +1,13 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import * as _ from "lodash";
-import {Model} from "mongoose";
+import * as _ from 'lodash';
+import {Model} from 'mongoose';
 
-import AStore, {EStoreType} from "./_a.store";
-import observableModel from "../util/_f.observable.model";
+import AStore, {EStoreType} from './_a.store';
+import observableModel from '../util/_f.observable.model';
 
 export default class CollectionStore extends AStore {
-
 	constructor(model: Model<any>, field: string) {
 		super(model, field);
 		this._type = EStoreType.COLLECTION;
@@ -16,10 +15,9 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model)
-			.subscribe({
-				next: (c: any) => this.load()
-			});
+		this.subscription = observableModel(this.model).subscribe({
+			next: (c: any) => this.load()
+		});
 	}
 
 	protected async load(): Promise<void> {
@@ -27,13 +25,10 @@ export default class CollectionStore extends AStore {
 		if (_.isEmpty(this._config)) return this.emit();
 
 		let data = [];
-		const total = await this._model
-			.countDocuments(this._query);
+		const total = await this._model.countDocuments(this._query);
 
 		if (total > 0) {
-			data = await this._model
-				.find(this._query, this._fields, this._paging)
-				.sort(this._sort);
+			data = await this._model.find(this._query, this._fields, this._paging).sort(this._sort);
 		}
 
 		this.emit({total, data});
@@ -51,5 +46,4 @@ export default class CollectionStore extends AStore {
 			};
 		}
 	}
-
 }

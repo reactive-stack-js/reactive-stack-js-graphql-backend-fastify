@@ -1,18 +1,17 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
-import sift from "sift";
-import * as _ from "lodash";
-import {filter} from "rxjs/operators";
+import sift from 'sift';
+import * as _ from 'lodash';
+import {filter} from 'rxjs/operators';
 
-import AStore, {EStoreType} from "./_a.store";
-import observableModel from "../util/_f.observable.model";
+import AStore, {EStoreType} from './_a.store';
+import observableModel from '../util/_f.observable.model';
 
 // tslint:disable-next-line:variable-name
-const __getIdFromQuery = (query: any): string => _.isString(query) ? query : _.get(query, "_id");
+const __getIdFromQuery = (query: any): string => (_.isString(query) ? query : _.get(query, '_id'));
 
 export default class DocumentStore extends AStore {
-
 	constructor(model: any, field: string) {
 		super(model, field);
 		this._type = EStoreType.DOCUMENT;
@@ -56,10 +55,8 @@ export default class DocumentStore extends AStore {
 		const id = __getIdFromQuery(this._query);
 		if (id) {
 			return id === _.toString(document._id);
-
 		} else if (!_.isEmpty(this._sort)) {
 			// This cannot work, must reload...
-
 		} else {
 			const test = sift(this._query);
 			return test(document);
@@ -73,15 +70,10 @@ export default class DocumentStore extends AStore {
 	}
 
 	private async _loadSortedFirstDocument(): Promise<any> {
-		return _.first(
-			await this._model
-				.find(this._query, this._fields, this._paging)
-				.sort(this._sort)
-		);
+		return _.first(await this._model.find(this._query, this._fields, this._paging).sort(this._sort));
 	}
 
 	private async _loadDocument(): Promise<any> {
 		return this._model.findOne(this._query, this._fields);
 	}
-
 }
