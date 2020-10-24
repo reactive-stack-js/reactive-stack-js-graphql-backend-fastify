@@ -22,7 +22,7 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected async load(): Promise<void> {
-		// console.log("\n - CollectionSection load", this._field, this._query, this._sort, this._fields, this._paging);
+		// console.log(" - CollectionSection load", this._field, this._query, this._sort, this._fields, this._paging);
 		if (isEmpty(this._config)) return this.emit();
 
 		let data = [];
