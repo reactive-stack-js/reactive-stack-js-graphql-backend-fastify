@@ -27,5 +27,3 @@ cron.schedule(
 		scheduled: true
 	}
 );
-
-// TODO: process workers folder and start them all

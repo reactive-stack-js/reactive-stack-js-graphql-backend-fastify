@@ -18,7 +18,6 @@ class ObservableModel extends Subject<any> {
 		this._stream = this._model.watch([], {fullDocument: 'updateLookup'});
 
 		this._stream.on('change', (change) => {
-			// you can also just forward the entire change object: this.next(change);
 			this.next(_.pick(change, ['ns', 'documentKey', 'operationType', 'updateDescription', 'fullDocument']));
 		});
 	}

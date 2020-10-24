@@ -22,7 +22,7 @@ export default (connection: SocketStream): void => {
 	});
 
 	socket.on('message', async (message: string) => {
-		console.log('\n - message:', message);
+		console.log(' - message:', message);
 		message = JSON.parse(message);
 		await client.consume(message);
 	});
