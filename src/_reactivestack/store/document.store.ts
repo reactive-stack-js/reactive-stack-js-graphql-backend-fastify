@@ -2,14 +2,14 @@
 'use strict';
 
 import sift from 'sift';
-import * as _ from 'lodash';
 import {filter} from 'rxjs/operators';
+import {isString, get, isEmpty, toString, first} from 'lodash';
 
 import AStore, {EStoreType} from './_a.store';
 import observableModel from '../util/_f.observable.model';
 
 // tslint:disable-next-line:variable-name
-const __getIdFromQuery = (query: any): string => (_.isString(query) ? query : _.get(query, '_id'));
+const __getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id'));
 
 export default class DocumentStore extends AStore {
 	constructor(model: any, field: string) {
@@ -34,16 +34,16 @@ export default class DocumentStore extends AStore {
 	}
 
 	protected async load(change: any): Promise<void> {
-		if (_.isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emit();
 
 		const {operationType, fullDocument: document} = change;
 		if ('delete' === operationType) return this.emit(null);
 
 		let data;
 		const id = __getIdFromQuery(this._query);
-		if (id) data = !_.isEmpty(document) ? document : await this._loadDocumentById(id);
-		else if (!_.isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
-		else data = !_.isEmpty(document) ? document : await this._loadDocument();
+		if (id) data = !isEmpty(document) ? document : await this._loadDocumentById(id);
+		else if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
+		else data = !isEmpty(document) ? document : await this._loadDocument();
 
 		this.emit(data);
 	}
@@ -54,8 +54,8 @@ export default class DocumentStore extends AStore {
 
 		const id = __getIdFromQuery(this._query);
 		if (id) {
-			return id === _.toString(document._id);
-		} else if (!_.isEmpty(this._sort)) {
+			return id === toString(document._id);
+		} else if (!isEmpty(this._sort)) {
 			// This cannot work, must reload...
 		} else {
 			const test = sift(this._query);
@@ -70,7 +70,7 @@ export default class DocumentStore extends AStore {
 	}
 
 	private async _loadSortedFirstDocument(): Promise<any> {
-		return _.first(await this._model.find(this._query, this._fields, this._paging).sort(this._sort));
+		return first(await this._model.find(this._query, this._fields, this._paging).sort(this._sort));
 	}
 
 	private async _loadDocument(): Promise<any> {

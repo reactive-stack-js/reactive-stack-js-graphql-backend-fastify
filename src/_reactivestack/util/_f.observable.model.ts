@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import * as _ from 'lodash';
+import {pick} from 'lodash';
 import {Subject} from 'rxjs';
 import {Model} from 'mongoose';
 import {ChangeStream} from 'mongodb';
@@ -16,7 +16,7 @@ class ObservableModel extends Subject<any> {
 		this._stream = this._model.watch([], {fullDocument: 'updateLookup'});
 
 		this._stream.on('change', (change) => {
-			this.next(_.pick(change, ['ns', 'documentKey', 'operationType', 'updateDescription', 'fullDocument']));
+			this.next(pick(change, ['ns', 'documentKey', 'operationType', 'updateDescription', 'fullDocument']));
 		});
 	}
 }
