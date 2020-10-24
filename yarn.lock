@@ -56,9 +56,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@^4.14.158":
-  version "4.14.161"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.161.tgz#a21ca0777dabc6e4f44f3d07f37b765f54188b18"
+"@types/lodash@^4.14.161":
+  version "4.14.162"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.162.tgz#65d78c397e0d883f44afbf1f7ba9867022411470"
 
 "@types/moment-timezone@^0.5.30":
   version "0.5.30"
@@ -86,9 +86,13 @@
   dependencies:
     "@types/tz-offset" "*"
 
-"@types/node@*", "@types/node@^14.0.26":
+"@types/node@*":
   version "14.11.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
+
+"@types/node@^14.11.2":
+  version "14.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.2.tgz#d25295f9e4ca5989a2c610754dc02a9721235eeb"
 
 "@types/swagger-schema-official@^2.0.20":
   version "2.0.21"
@@ -1288,7 +1292,7 @@ lodash.once@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
 
-lodash@^4.17.19:
+lodash@^4.17.20:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
 
@@ -1712,7 +1716,7 @@ rfdc@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/rfdc/-/rfdc-1.1.4.tgz#ba72cc1367a0ccd9cf81a870b3b58bd3ad07f8c2"
 
-rxjs@^6.5.4:
+rxjs@^6.6.3:
   version "6.6.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.3.tgz#8ca84635c4daa900c0d3967a6ee7ac60271ee552"
   dependencies:
@@ -1806,7 +1810,7 @@ sift@7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/sift/-/sift-7.0.1.tgz#47d62c50b159d316f1372f8b53f9c10cd21a4b08"
 
-sift@^13.2.0:
+sift@^13.3.5:
   version "13.3.5"
   resolved "https://registry.yarnpkg.com/sift/-/sift-13.3.5.tgz#de08275e1427731e1fe25192f88786e38bbfa89e"
 
@@ -1990,7 +1994,7 @@ tslint-config-prettier@^1.18.0:
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.18.0.tgz#75f140bde947d35d8f0d238e0ebf809d64592c37"
 
-tslint-etc@^1.10.0:
+tslint-etc@^1.13.7:
   version "1.13.7"
   resolved "https://registry.yarnpkg.com/tslint-etc/-/tslint-etc-1.13.7.tgz#3fc6dacc21b3ffa2e727398b7a8d7099dbb95942"
   dependencies:

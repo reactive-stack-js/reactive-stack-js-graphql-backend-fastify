@@ -38,7 +38,6 @@ const _getUserData = async (accessToken: string): Promise<any> => {
 
 module.exports = {
 	method: "POST",
-	url: "/auth/google",
 	handler: async (request: any, reply: any): Promise<void> => {
 		const {code, scope, redirect_uri} = request.body;
 		const {access_token, expires_in} = await _getUserAccessToken(code, scope, redirect_uri);

@@ -6,7 +6,7 @@ import uuidv4 from "../_reactivestack/util/_f.unique.id";
 import graphQLTypeComposerFactory from "../_graphql/_f.type.composer.factory";
 import {GraphQLString} from "graphql";
 import {GraphQLJSONObject} from "graphql-type-json";
-import CollectionsModelsMap from "../_reactivestack/collections.models.map";
+import CollectionsModelsMap from "../_reactivestack/util/collections.models.map";
 
 const DraftSchema = new Schema(
 	{

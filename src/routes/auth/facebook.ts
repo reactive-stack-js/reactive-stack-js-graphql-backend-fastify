@@ -49,7 +49,6 @@ const _getUserData = async (id: string, accessToken: string): Promise<any> => {
 
 module.exports = {
 	method: "POST",
-	url: "/auth/facebook",
 	handler: async (request: any, reply: any): Promise<void> => {
 		await _getFbAppAccessToken();
 		const {code, redirect_uri} = request.body;

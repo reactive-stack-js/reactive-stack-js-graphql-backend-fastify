@@ -6,7 +6,7 @@ import {Model, Types} from "mongoose";
 import {GraphQLJSONObject} from "graphql-type-json";
 import {GraphQLBoolean, GraphQLID, GraphQLString} from "graphql";
 
-import CollectionsModelsMap from "../_reactivestack/collections.models.map";
+import CollectionsModelsMap from "../_reactivestack/util/collections.models.map";
 import Draft from "../models/draft";
 
 const _hasItemId = (model: Model<any>): boolean => _.includes(_.keys(model.schema.paths), "itemId");
