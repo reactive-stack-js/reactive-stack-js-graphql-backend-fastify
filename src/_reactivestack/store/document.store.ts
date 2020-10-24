@@ -29,7 +29,7 @@ export default class DocumentStore extends AStore {
 		this.subscription = observableModel(this.model)
 			.pipe(filter((change) => this._pipeFilter(change)))
 			.subscribe({
-				next: (change: any) => this.load(change)
+				next: (change: any): Promise<void> => this.load(change)
 			});
 	}
 

@@ -2,6 +2,7 @@
 'use strict';
 
 import {v4} from 'uuid';
+import {isString} from 'lodash';
 import {SocketStream} from 'fastify-websocket';
 
 import Client from './client';
@@ -16,9 +17,13 @@ export default (connection: SocketStream): void => {
 
 	let client = new Client();
 	let subscription = client.subscribe({
-		next: (message) => socket.send(message),
-		error: (err) => console.log('error', err),
-		complete: () => console.log('completed')
+		next: (message: any): void => {
+
+			if (!isString(message)) message = JSON.stringify(message);
+			socket.send(message)
+		},
+		error: (err: any): void => console.log('error', err),
+		complete: (): void => console.log('completed')
 	});
 
 	socket.on('message', async (message: string) => {

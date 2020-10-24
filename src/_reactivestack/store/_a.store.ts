@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import * as _ from 'lodash';
+import {isArray, each, cloneDeep, isEmpty, set} from 'lodash';
 import {Model} from 'mongoose';
 import {Subject, Subscription} from 'rxjs';
 import * as jsondiffpatch from 'jsondiffpatch';
@@ -58,9 +58,9 @@ export default abstract class AStore extends Subject<any> {
 		this._sort = sort;
 
 		this._fields = fields;
-		if (_.isArray(fields)) {
+		if (isArray(fields)) {
 			this._fields = {};
-			_.each(fields, (field) => _.set(this._fields, field, 1));
+			each(fields, (field) => set(this._fields, field, 1));
 		}
 	}
 
@@ -82,7 +82,7 @@ export default abstract class AStore extends Subject<any> {
 	public set config(config: any) {
 		if (!this._isValidConfig(config)) return;
 
-		this._config = _.cloneDeep(config);
+		this._config = cloneDeep(config);
 		this.extractFromConfig();
 		this.restartSubscription();
 	}
@@ -102,20 +102,20 @@ export default abstract class AStore extends Subject<any> {
 	private _isValidConfig(config: any): boolean {
 		if (!config) return false;
 		const diff = jsondiffpatch.diff(this._config, config);
-		return !_.isEmpty(diff);
+		return !isEmpty(diff);
 	}
 
 	private _emitOne(update: any): void {
 		const message = _baseMessage(this._target);
-		_.set(message.payload, this._target, update);
-		this.next(JSON.stringify(message));
+		set(message.payload, this._target, update);
+		this.next(message);
 	}
 
 	private _emitMany(update: any = {total: 0, data: []}): void {
 		const {total, data} = update;
 		const message = _baseMessage(this._target);
-		_.set(message.payload, this._target, data);
-		_.set(message.payload, '_' + this._target + 'Count', total);
-		this.next(JSON.stringify(message));
+		set(message.payload, this._target, data);
+		set(message.payload, '_' + this._target + 'Count', total);
+		this.next(message);
 	}
 }

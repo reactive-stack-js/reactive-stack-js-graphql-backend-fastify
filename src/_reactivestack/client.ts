@@ -62,7 +62,7 @@ export default class Client extends Subject<any> {
 				const {jwt, user} = refreshPayload;
 				this._jwt = jwt;
 				this._user = user;
-				this.next(JSON.stringify({type: 'refresh', payload: refreshPayload}));
+				this.next({type: 'refresh', payload: refreshPayload});
 			}
 
 			clearTimeout(this._timeout);
@@ -108,9 +108,9 @@ export default class Client extends Subject<any> {
 
 			this._stores.set(target, store);
 			const subscription = store.subscribe({
-				next: (m: any) => this.next(m),
-				error: (e: any) => this.error(e),
-				complete: () => this.complete()
+				next: (m: any): void => this.next(m),
+				error: (e: any): void => this.error(e),
+				complete: (): void => this.complete()
 			});
 			this._subscriptions.set(target, subscription);
 
