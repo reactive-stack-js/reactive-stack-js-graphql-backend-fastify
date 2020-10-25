@@ -9,7 +9,7 @@ import {Subject, Subscription} from 'rxjs';
 import AStore from './store/_a.store';
 import storeFactory from './store/_f.store.factory';
 import {StoreSubscriptionUpdateType} from './store/_t.store';
-import IUserManager from "./util/_i.user.manager";
+import IUserManager from './util/_i.user.manager';
 
 export default class Client extends Subject<any> {
 	private _userManager: IUserManager;
@@ -54,7 +54,7 @@ export default class Client extends Subject<any> {
 		const check = this._userManager.checkSession();
 		if (check) this.next(check);
 
-		const refreshIn = get(check, 'refresh_in', 299000);	 // 299000 = 4min 59sec
+		const refreshIn = get(check, 'refresh_in', 299000); // 299000 = 4min 59sec
 
 		clearTimeout(this._timeout);
 		this._timeout = setTimeout(() => {

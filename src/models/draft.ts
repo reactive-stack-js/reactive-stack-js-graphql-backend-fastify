@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import {v4 as uuidv4} from "uuid";
+import {v4 as uuidv4} from 'uuid';
 import {model, Schema} from 'mongoose';
 import graphQLTypeComposerFactory from '../_graphql/_f.type.composer.factory';
 

@@ -109,7 +109,8 @@ module.exports = {
 		args: {
 			draftId: {type: GraphQLID}
 		},
-		resolve: async (root: any, args: any) => {	// , context: any
+		resolve: async (root: any, args: any) => {
+			// , context: any
 			// const userId = _getUserId(context);
 			// TODO: authorize...
 
