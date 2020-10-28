@@ -12,8 +12,6 @@ import graphQLQueryFactory from './_f.query.factory';
 import CollectionsModelsMap from '../_reactivestack/util/collections.models.map';
 import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './_f.type.composer.fields.factory';
 
-import Draft, {GraphQLDraftType} from '../models/draft';
-
 const _metaData = (model: Model<any>): any => {
 	const modelName = model.modelName;
 	const words = _.join(
@@ -60,7 +58,7 @@ const _addToReverseRefs = (graphQLMetaData: any, fullPath: string): void => {
 const _processReverseRefs = (): void => {
 	_.each(reverseRefs, (fullPath: string): void => {
 		const {graphQLMetaData} = require(fullPath);
-		const {tc, graphql} = graphQLMetaData;
+		const {name, model, tc, type, graphql} = graphQLMetaData;
 
 		const schemaFields: GraphQLTypeFactoryFieldType[] = [];
 		_.each(graphql, (value, key) => {
@@ -71,10 +69,10 @@ const _processReverseRefs = (): void => {
 				const hasItemId = _.includes(fields, 'itemId');
 				const through = hasItemId ? 'sourceDocumentItemId' : 'sourceDocumentId';
 				schemaFields.push({
-					name: 'draft',
-					target: 'draft',
-					type: GraphQLDraftType,
-					model: Draft,
+					name,
+					target: name,
+					type,
+					model,
 					through
 				});
 			}
