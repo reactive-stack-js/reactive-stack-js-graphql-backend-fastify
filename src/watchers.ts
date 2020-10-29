@@ -5,4 +5,4 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({path: '.env.local'});
 
-// TODO: process workers folder and start them all
+// TODO: process watchers folder and start them all
