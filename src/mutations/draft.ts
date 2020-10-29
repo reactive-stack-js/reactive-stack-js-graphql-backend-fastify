@@ -2,7 +2,7 @@
 'use strict';
 
 import {Model, Types} from 'mongoose';
-import {each, first, get, includes, keys, omit, set} from 'lodash';
+import {each, first, get, includes, keys, omit, set, uniq} from 'lodash';
 
 import {GraphQLJSONObject} from 'graphql-type-json';
 import {GraphQLBoolean, GraphQLID, GraphQLString} from 'graphql';
@@ -93,10 +93,16 @@ module.exports = {
 			if (draft) {
 				let {document} = draft;
 				document = set(document, field, value);
+
+				let {changes} = draft;
+				changes.push(field);
+				changes = uniq(changes);
+
 				const updater = {
 					updatedBy: userId,
 					updatedAt: new Date(),
-					document
+					document,
+					changes
 				};
 				return Draft.updateOne({_id: draftId}, {$set: updater});
 			}

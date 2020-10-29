@@ -66,7 +66,7 @@ const _addJWTHook = (srv: FastifyInstance<Server, IncomingMessage, ServerRespons
 		try {
 			await request.jwtVerify();
 		} catch (err) {
-			console.error('Not logged in.');
+			// console.error('Not logged in.');
 		}
 	});
 };

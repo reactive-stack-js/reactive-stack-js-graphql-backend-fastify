@@ -12,7 +12,8 @@ const DraftSchema = new Schema(
 		sourceDocumentItemId: {type: String, required: true, default: uuidv4()},
 		createdBy: {type: String, required: true},
 		document: {type: Object, required: true},
-		meta: {type: Object, default: {}}
+		meta: {type: Object, default: {}},
+		changes: [String]
 	},
 	{
 		timestamps: true,
