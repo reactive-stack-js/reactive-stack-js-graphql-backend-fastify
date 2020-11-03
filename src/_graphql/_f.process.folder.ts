@@ -8,16 +8,16 @@ import {filter} from 'lodash';
 
 const processFolder = (root: any, folder: string, fileProcessor: Function): any => {
 	const fileNames = fs.readdirSync(folder);
-	const files = filter(fileNames, (fileName) => !fs.lstatSync(path.join(folder, fileName)).isDirectory());
-	files.forEach((file) => {
+	const files = filter(fileNames, (fileName: string) => !fs.lstatSync(path.join(folder, fileName)).isDirectory());
+	files.forEach((file: string) => {
 		const ext = path.extname(file);
 		if (ext !== '.ts' && ext !== '.js') return;
 		root = fileProcessor(root, folder, file);
 	});
 
-	const folders = filter(fileNames, (fileName) => fs.lstatSync(path.join(folder, fileName)).isDirectory());
-	folders.forEach((subfolder) => {
-		root = processFolder(root, subfolder, fileProcessor);
+	const folders = filter(fileNames, (fileName: string) => fs.lstatSync(path.join(folder, fileName)).isDirectory());
+	folders.forEach((sub: string) => {
+		root = processFolder(root, sub, fileProcessor);
 	});
 
 	return root;
