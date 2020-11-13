@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+import {first} from 'lodash';
 import {Model} from 'mongoose';
 import {GraphQLJSONObject} from 'graphql-type-json';
 import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from 'graphql';
@@ -12,13 +13,22 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	// Single by id or query
 	queries[name] = {
 		type,
-		args: {id: {type: GraphQLID}, query: {type: GraphQLJSONObject}},
-		resolve: (parent: any, args: any) => {
-			const {id, query} = args;
+		args: {
+			id: {type: GraphQLID},
+			query: {type: GraphQLJSONObject},
+			sort: {type: GraphQLJSONObject}
+		},
+		resolve: async (parent: any, args: any) => {
+			const {id, query, sort = {}} = args;
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
+
 			if (id) return model.findOne({_id: args.id});
-			return model.findOne(query);
+
+			const rows = await model
+				.find(query)
+				.sort(sort);
+			return first(rows);
 		}
 	};
 
