@@ -36,13 +36,13 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	queries[name + 's'] = {
 		type: new GraphQLList(type),
 		args: {
-			pageSize: {type: GraphQLInt},
-			page: {type: GraphQLInt},
 			filter: {type: GraphQLJSONObject},
-			sort: {type: GraphQLJSONObject}
+			sort: {type: GraphQLJSONObject},
+			pageSize: {type: GraphQLInt},
+			page: {type: GraphQLInt}
 		},
 		resolve: (parent: any, args: any) => {
-			const {page, pageSize, filter = {}, sort = {}} = args;
+			const {filter = {}, sort = {}, pageSize, page} = args;
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
 			if (page && pageSize) {
