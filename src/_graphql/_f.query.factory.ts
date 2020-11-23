@@ -3,20 +3,22 @@
 
 import {first} from 'lodash';
 import {Model} from 'mongoose';
-import {GraphQLJSONObject} from 'graphql-type-json';
 import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from 'graphql';
+import graphQLFilterTypeFactory from './_f.filter.type.factory';
+import graphQLSortingTypeFactory from './_f.sorting.type.factory';
 
 // TODO: add permissions...
 const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjectType) => {
 	const queries: any = {};
 
+	const filterType = graphQLFilterTypeFactory(type);
+	const sortingType = graphQLSortingTypeFactory(type);
+
 	// Single by id or query
 	queries[name] = {
 		type,
 		args: {
-			id: {type: GraphQLID},
-			query: {type: GraphQLJSONObject},
-			sort: {type: GraphQLJSONObject}
+			id: {type: GraphQLID}
 		},
 		resolve: async (parent: any, args: any) => {
 			const {id, query, sort = {}} = args;
@@ -25,9 +27,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 
 			if (id) return model.findOne({_id: args.id});
 
-			const rows = await model
-				.find(query)
-				.sort(sort);
+			const rows = await model.find(query).sort(sort);
 			return first(rows);
 		}
 	};
@@ -36,8 +36,8 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	queries[name + 's'] = {
 		type: new GraphQLList(type),
 		args: {
-			filter: {type: GraphQLJSONObject},
-			sort: {type: GraphQLJSONObject},
+			filter: {type: filterType},
+			sort: {type: sortingType},
 			pageSize: {type: GraphQLInt},
 			page: {type: GraphQLInt}
 		},
@@ -61,7 +61,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	queries[name + 'sCount'] = {
 		type: GraphQLInt,
 		args: {
-			filter: {type: GraphQLJSONObject}
+			filter: {type: filterType}
 		},
 		resolve: (parent: any, args: any) => {
 			const {filter = {}} = args;
