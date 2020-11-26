@@ -22,7 +22,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 		args: {
 			id: {type: GraphQLID}
 		},
-		resolve: async (parent: any, args: any) => {
+		resolve: async (source: any, args: any) => {
 			const {id} = args;
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
@@ -40,7 +40,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 			_pageSize: {type: GraphQLInt},
 			_page: {type: GraphQLInt}
 		},
-		resolve: (parent: any, args: any) => {
+		resolve: (source: any, args: any) => {
 			const {_sort = {}, _pageSize, _page = 1} = args;
 			const filter = pick(args, keys(filterType.getFields()));
 			// const user = _.get(context, "reply.request.user");
@@ -63,7 +63,7 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 		args: {
 			...filterType.getFields()
 		},
-		resolve: (parent: any, args: any) => {
+		resolve: (source: any, args: any) => {
 			const filter = pick(args, keys(filterType.getFields()));
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
