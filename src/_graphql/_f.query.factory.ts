@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-import {first, pick, keys} from 'lodash';
+import {pick, keys} from 'lodash';
 import {Model} from 'mongoose';
+
 import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from 'graphql';
+
 import graphQLFilterTypeFactory from './_f.filter.type.factory';
 import graphQLSortingTypeFactory from './_f.sorting.type.factory';
 
