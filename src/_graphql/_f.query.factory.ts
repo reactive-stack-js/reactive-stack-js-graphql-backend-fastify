@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import {first} from 'lodash';
+import {first, pick, keys} from 'lodash';
 import {Model} from 'mongoose';
 import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from 'graphql';
 import graphQLFilterTypeFactory from './_f.filter.type.factory';
@@ -21,39 +21,37 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 			id: {type: GraphQLID}
 		},
 		resolve: async (parent: any, args: any) => {
-			const {id, query, sort = {}} = args;
+			const {id} = args;
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
 
-			if (id) return model.findOne({_id: args.id});
-
-			const rows = await model.find(query).sort(sort);
-			return first(rows);
+			return model.findOne({_id: id});
 		}
 	};
 
-	// List by filter, sort, pageSize and page#
+	// List by filter, _sort, pageSize and page#
 	queries[name + 's'] = {
 		type: new GraphQLList(type),
 		args: {
-			filter: {type: filterType},
-			sort: {type: sortingType},
-			pageSize: {type: GraphQLInt},
-			page: {type: GraphQLInt}
+			...filterType.getFields(),
+			_sort: {type: sortingType},
+			_pageSize: {type: GraphQLInt},
+			_page: {type: GraphQLInt}
 		},
 		resolve: (parent: any, args: any) => {
-			const {filter = {}, sort = {}, pageSize, page} = args;
+			const {_sort = {}, _pageSize, _page = 1} = args;
+			const filter = pick(args, keys(filterType.getFields()));
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
-			if (page && pageSize) {
+			if (_page && _pageSize) {
 				return model
 					.find(filter)
-					.sort(sort)
-					.limit(pageSize)
-					.skip((page - 1) * pageSize);
+					.sort(_sort)
+					.limit(_pageSize)
+					.skip((_page - 1) * _pageSize);
 			}
 
-			return model.find(filter).sort(sort);
+			return model.find(filter).sort(_sort);
 		}
 	};
 
@@ -61,10 +59,10 @@ const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjec
 	queries[name + 'sCount'] = {
 		type: GraphQLInt,
 		args: {
-			filter: {type: filterType}
+			...filterType.getFields()
 		},
 		resolve: (parent: any, args: any) => {
-			const {filter = {}} = args;
+			const filter = pick(args, keys(filterType.getFields()));
 			// const user = _.get(context, "reply.request.user");
 			// if (!user) throw new Error("Not authorized");
 			return model.countDocuments(filter);
