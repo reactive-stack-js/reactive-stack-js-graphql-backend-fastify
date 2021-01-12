@@ -10,7 +10,7 @@ import jwtTokenTimes from './_f.jwt.token.times';
 export const _refresh = (token: any): any => merge(token, jwtTokenTimes());
 
 // TODO: this is a quick hack, one should contact the provider for a new token!
-const jwtTokenRefresh = (jwtSecret: string, jwt: any): any => {
+const jwtTokenRefresh = (jwtSecret: string, jwt: string): any => {
 	let token = jsonwebtoken.verify(jwt, jwtSecret);
 
 	const now = moment(new Date());

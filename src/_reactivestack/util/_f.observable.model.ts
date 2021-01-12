@@ -44,5 +44,5 @@ class ObservableModelsMap {
 	}
 }
 
-const observableModel = (model: any): ObservableModel => ObservableModelsMap.get(model);
+const observableModel = (model: Model<any>): ObservableModel => ObservableModelsMap.get(model);
 export default observableModel;
