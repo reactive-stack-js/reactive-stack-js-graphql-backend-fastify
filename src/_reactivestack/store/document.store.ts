@@ -12,8 +12,8 @@ import observableModel from '../util/_f.observable.model';
 const __getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id'));
 
 export default class DocumentStore extends AStore {
-	constructor(model: any, field: string) {
-		super(model, field);
+	constructor(model: any, target: string) {
+		super(model, target);
 		this._type = EStoreType.DOCUMENT;
 		Object.setPrototypeOf(this, DocumentStore.prototype);
 	}

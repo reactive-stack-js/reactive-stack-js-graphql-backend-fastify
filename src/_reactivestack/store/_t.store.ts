@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-export type StoreScopeType = 'many' | 'one';
+export type StoreScopeType = 'count' | 'one' | 'many';
 
 export type StoreSubscriptionUpdateType = {
 	target: string;

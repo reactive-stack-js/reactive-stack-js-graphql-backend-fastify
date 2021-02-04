@@ -8,7 +8,8 @@ import * as jsondiffpatch from 'jsondiffpatch';
 
 export enum EStoreType {
 	DOCUMENT,
-	COLLECTION
+	COLLECTION,
+	COUNT
 }
 
 // tslint:disable-next-line:variable-name
@@ -75,6 +76,7 @@ export default abstract class AStore extends Subject<any> {
 	}
 
 	protected emit(update: any = {}): void {
+		if (this._isCount()) return this._emitOne(update);
 		if (this._isDocument()) return this._emitOne(update);
 		if (this._isCollection()) return this._emitMany(update);
 	}
@@ -89,6 +91,10 @@ export default abstract class AStore extends Subject<any> {
 
 	public get target(): string {
 		return this._target;
+	}
+
+	private _isCount(): boolean {
+		return this._type === EStoreType.COUNT;
 	}
 
 	private _isDocument(): boolean {
