@@ -9,7 +9,11 @@ const MONGODB_URI: string = process.env.MONGODB_URI || '';
 export default class MongoDBConnector {
 	public static init(): Connection {
 		if (!MongoDBConnector._instance) MongoDBConnector._instance = new MongoDBConnector();
-		return this._instance._connection;
+		return MongoDBConnector._instance._connection;
+	}
+
+	public static get connection(): Connection {
+		return MongoDBConnector._instance._connection;
 	}
 
 	private static _instance: MongoDBConnector;

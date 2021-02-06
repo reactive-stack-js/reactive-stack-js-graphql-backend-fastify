@@ -25,8 +25,8 @@ class ObservableModelsMap {
 	private static _instance: ObservableModelsMap;
 
 	public static init(): ObservableModelsMap {
-		if (!this._instance) this._instance = new ObservableModelsMap();
-		return this._instance;
+		if (!ObservableModelsMap._instance) ObservableModelsMap._instance = new ObservableModelsMap();
+		return ObservableModelsMap._instance;
 	}
 
 	public static get(model: Model<any>): ObservableModel {
@@ -44,5 +44,5 @@ class ObservableModelsMap {
 	}
 }
 
-const observableModel = (model: Model<any>): ObservableModel => ObservableModelsMap.get(model);
+const observableModel = (model: Model<any>): Subject<any> => ObservableModelsMap.get(model);
 export default observableModel;
