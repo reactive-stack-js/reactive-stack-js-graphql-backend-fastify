@@ -53,16 +53,12 @@ export default class DocumentStore extends AStore {
 		if (!document && 'delete' === operationType) return true;
 
 		const id = __getIdFromQuery(this._query);
-		if (id) {
-			return id === toString(document._id);
-		} else if (!isEmpty(this._sort)) {
-			// This cannot work, must reload...
-		} else {
+		if (id) return id === toString(document._id);
+		else if (!isEmpty(this._sort)) return true;	// Must reload...
+		else {
 			const test = sift(this._query);
 			return test(document);
 		}
-
-		return true;
 	}
 
 	private async _loadDocumentById(id: string): Promise<any> {

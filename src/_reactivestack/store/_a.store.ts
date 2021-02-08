@@ -13,8 +13,8 @@ export enum EStoreType {
 }
 
 // tslint:disable-next-line:variable-name
-const _baseMessage = (target: string): any => ({
-	type: 'update',
+const _baseMessage = (target: string, incremental = false): any => ({
+	type: incremental ? 'increment' : 'update',
 	target,
 	payload: {}
 });
@@ -25,6 +25,8 @@ export default abstract class AStore extends Subject<any> {
 	protected _type: EStoreType;
 
 	protected _config: any;
+	protected _strict: false;
+	protected _incremental: false;
 
 	protected _query: any;
 	protected _sort: any;
@@ -49,7 +51,7 @@ export default abstract class AStore extends Subject<any> {
 		this._subscription = null;
 	}
 
-	protected abstract async load(change: any): Promise<void>;
+	protected abstract load(change: any): Promise<void>;
 
 	protected abstract restartSubscription(): void;
 
@@ -61,14 +63,14 @@ export default abstract class AStore extends Subject<any> {
 		this._fields = fields;
 		if (isArray(fields)) {
 			this._fields = {};
-			each(fields, (field) => set(this._fields, field, 1));
+			each(fields, (field: string) => set(this._fields, field, 1));
 		}
 	}
 
 	protected set subscription(subscription: Subscription) {
 		this.destroy();
 		this._subscription = subscription;
-		this.load({});
+		this.load({}).then(() => null);
 	}
 
 	protected get model(): Model<any> {
@@ -112,16 +114,16 @@ export default abstract class AStore extends Subject<any> {
 	}
 
 	private _emitOne(update: any): void {
-		const message = _baseMessage(this._target);
+		const message = _baseMessage(this._target, this._incremental);
 		set(message.payload, this._target, update);
 		this.next(message);
 	}
 
 	private _emitMany(update: any = {total: 0, data: []}): void {
 		const {total, data} = update;
-		const message = _baseMessage(this._target);
+		const message = _baseMessage(this._target, this._incremental);
 		set(message.payload, this._target, data);
-		set(message.payload, '_' + this._target + 'Count', total);
+		if (!this._incremental) set(message.payload, '_' + this._target + 'Count', total);
 		this.next(message);
 	}
 }

@@ -3,10 +3,21 @@
 
 export type StoreScopeType = 'count' | 'one' | 'many';
 
+export type StoreSubscriptionConfigType = {
+	query: any;
+	sort?: any;
+	fields?: any;
+	skip?: number;
+	page?: number;
+	pageSize?: number;
+	strict: false;
+	incremental: false;
+};
+
 export type StoreSubscriptionUpdateType = {
 	target: string;
 	scope: StoreScopeType;
-	config: any;
+	config: StoreSubscriptionConfigType;
 
 	// use if mongodb is the only reactive source
 	observe: string; // collectionName
