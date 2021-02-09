@@ -5,12 +5,8 @@ import * as mongoose from 'mongoose';
 import {Model} from 'mongoose';
 
 export default class CollectionsModelsMap {
-	public static init(): void {
-		const modelNames = mongoose.modelNames();
-		modelNames.forEach((name) => {
-			const model = mongoose.model(name);
-			CollectionsModelsMap._models.set(model.collection.collectionName, model.modelName);
-		});
+	public static addCollectionToModelMapping(model: Model<any>): void {
+		CollectionsModelsMap._models.set(model.collection.collectionName, model.modelName);
 	}
 
 	public static getModelByCollection(collectionName: string): Model<any> | null {

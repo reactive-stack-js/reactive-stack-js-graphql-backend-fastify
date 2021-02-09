@@ -9,6 +9,7 @@ import {composeWithMongoose} from 'graphql-compose-mongoose';
 
 import processFolder from './_f.process.folder';
 import graphQLQueryFactory from './_f.query.factory';
+import CollectionsModelsMap from '../_reactivestack/util/collections.models.map';
 import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './_f.type.composer.fields.factory';
 
 const _metaData = (model: Model<any>): any => {
@@ -42,6 +43,8 @@ const _processFile = (root: any, folder: string, file: string): any => {
 
 	const {name, model, type} = graphQLMetaData;
 	_addToReverseRefs(graphQLMetaData, fullPath);
+
+	CollectionsModelsMap.addCollectionToModelMapping(model);
 
 	const fields = graphQLQueryFactory(name, model, type);
 	return {...root, ...fields};

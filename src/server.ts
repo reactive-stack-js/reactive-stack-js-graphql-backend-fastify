@@ -25,7 +25,6 @@ import GQLSchema from './graphql.schema';
 import websocket from './_f.websocket';
 import addRoutes from './_reactivestack/util/_f.add.routes';
 import MongoDBConnector from './_reactivestack/mongodb.connector';
-import CollectionsModelsMap from './_reactivestack/util/collections.models.map';
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false});
 
@@ -88,7 +87,6 @@ const _addWebSocketListener = (srv: FastifyInstance<Server, IncomingMessage, Ser
 // Run the server!
 const startFastifyServer = async () => {
 	try {
-		CollectionsModelsMap.init();
 		MongoDBConnector.init();
 
 		_addJWTHook(server);
