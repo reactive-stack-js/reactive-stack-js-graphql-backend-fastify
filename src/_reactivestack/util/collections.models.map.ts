@@ -26,7 +26,7 @@ export default class CollectionsModelsMap {
 	}
 
 	public static print() {
-		console.log(CollectionsModelsMap._models)
+		console.log(CollectionsModelsMap._models);
 	}
 
 	private static readonly _models: Map<string, string> = new Map<string, string>();

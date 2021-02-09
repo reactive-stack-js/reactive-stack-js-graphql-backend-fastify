@@ -54,7 +54,8 @@ export default class DocumentStore extends AStore {
 
 		const id = __getIdFromQuery(this._query);
 		if (id) return id === toString(document._id);
-		else if (!isEmpty(this._sort)) return true;	// Must reload...
+		else if (!isEmpty(this._sort)) return true;
+		// Must reload...
 		else {
 			const test = sift(this._query);
 			return test(document);

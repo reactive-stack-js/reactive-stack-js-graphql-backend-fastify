@@ -2,12 +2,12 @@
 'use strict';
 
 import sift from 'sift';
-import {isEmpty, omit, toString} from 'lodash';
+import {isEmpty, omit} from 'lodash';
 import {Model} from 'mongoose';
 
 import AStore, {EStoreType} from './_a.store';
 import observableModel from '../util/_f.observable.model';
-import {filter} from "rxjs/operators";
+import {filter} from 'rxjs/operators';
 
 export default class CollectionStore extends AStore {
 	constructor(model: Model<any>, target: string) {

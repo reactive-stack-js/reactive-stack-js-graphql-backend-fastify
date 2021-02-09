@@ -5,7 +5,7 @@ import {Model} from 'mongoose';
 
 import AStore from './_a.store';
 import {StoreScopeType} from './_t.store';
-import CountStore from "./count.store";
+import CountStore from './count.store';
 import DocumentStore from './document.store';
 import CollectionStore from './collection.store';
 import CollectionsModelsMap from '../util/collections.models.map';

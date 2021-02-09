@@ -5,7 +5,7 @@ import {isEmpty} from 'lodash';
 import {Model} from 'mongoose';
 
 import observableModel from '../util/_f.observable.model';
-import AStore, {EStoreType} from "./_a.store";
+import AStore, {EStoreType} from './_a.store';
 
 export default class CountStore extends AStore {
 	constructor(model: Model<any>, target: string) {
@@ -15,10 +15,9 @@ export default class CountStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model)
-			.subscribe({
-				next: (c: any): Promise<void> => this.load()
-			});
+		this.subscription = observableModel(this.model).subscribe({
+			next: (c: any): Promise<void> => this.load()
+		});
 	}
 
 	protected async load(): Promise<void> {
