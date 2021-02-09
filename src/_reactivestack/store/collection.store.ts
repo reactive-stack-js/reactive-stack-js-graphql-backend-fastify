@@ -30,7 +30,7 @@ export default class CollectionStore extends AStore {
 
 		if (this._incremental) {
 			const {operationType, fullDocument: document} = change;
-			if ('delete' === operationType) return this.emit(null);
+			if ('delete' === operationType) return this.emit();
 			if (!isEmpty(document)) return this.emit({data: document});
 		}
 

@@ -37,7 +37,7 @@ export default class DocumentStore extends AStore {
 		if (isEmpty(this._config)) return this.emit();
 
 		const {operationType, fullDocument: document} = change;
-		if ('delete' === operationType) return this.emit(null);
+		if ('delete' === operationType) return this.emit();
 
 		let data;
 		const id = __getIdFromQuery(this._query);
