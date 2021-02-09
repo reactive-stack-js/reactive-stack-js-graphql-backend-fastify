@@ -9,7 +9,7 @@ import {Subject, Subscription} from 'rxjs';
 import AStore from './store/_a.store';
 import storeFactory from './store/_f.store.factory';
 import {StoreSubscriptionUpdateType} from './store/_t.store';
-import IUserManager from './util/_i.user.manager';
+import IUserManager from '../_auth/_i.user.manager';
 
 export default class Client extends Subject<any> {
 	private _userManager: IUserManager;

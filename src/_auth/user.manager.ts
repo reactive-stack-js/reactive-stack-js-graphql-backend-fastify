@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 import jwtTokenRefresh from './_f.jwt.token.refresh';
-import IUserManager, {UserManagerRefreshType} from '../_reactivestack/util/_i.user.manager';
+import IUserManager, {UserManagerRefreshType} from './_i.user.manager';
 
 export default class UserManager implements IUserManager {
 	private _jwt: string;
