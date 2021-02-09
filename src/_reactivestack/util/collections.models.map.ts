@@ -5,8 +5,12 @@ import * as mongoose from 'mongoose';
 import {Model} from 'mongoose';
 
 export default class CollectionsModelsMap {
-	public static addCollectionToModelMapping(model: Model<any>): void {
-		CollectionsModelsMap._models.set(model.collection.collectionName, model.modelName);
+	public static init(): void {
+		const modelNames = mongoose.modelNames();
+		modelNames.forEach((name) => {
+			const model = mongoose.model(name);
+			CollectionsModelsMap._models.set(model.collection.collectionName, model.modelName);
+		});
 	}
 
 	public static getModelByCollection(collectionName: string): Model<any> | null {
@@ -19,6 +23,10 @@ export default class CollectionsModelsMap {
 			}
 		}
 		return null;
+	}
+
+	public static print() {
+		console.log(CollectionsModelsMap._models)
 	}
 
 	private static readonly _models: Map<string, string> = new Map<string, string>();

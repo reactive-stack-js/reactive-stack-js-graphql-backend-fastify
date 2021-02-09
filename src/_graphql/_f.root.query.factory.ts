@@ -44,8 +44,6 @@ const _processFile = (root: any, folder: string, file: string): any => {
 	const {name, model, type} = graphQLMetaData;
 	_addToReverseRefs(graphQLMetaData, fullPath);
 
-	CollectionsModelsMap.addCollectionToModelMapping(model);
-
 	const fields = graphQLQueryFactory(name, model, type);
 	return {...root, ...fields};
 };
