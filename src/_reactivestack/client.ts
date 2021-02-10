@@ -14,6 +14,7 @@ import IUserManager from '../_auth/_i.user.manager';
 export default class Client extends Subject<any> {
 	private _userManager: IUserManager;
 
+	private _ping = 0;
 	private _location: string;
 	private _stores: Map<string, AStore>;
 	private _subscriptions: Map<string, Subscription>;
@@ -30,6 +31,11 @@ export default class Client extends Subject<any> {
 		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
+
+			case 'pong':
+				this._processPong(message);
+				return;
+
 			case 'authenticate':
 				this._userManager.connected(message.jwt);
 				this._checkSession();
@@ -48,6 +54,17 @@ export default class Client extends Subject<any> {
 				this.removeSubscription(message.target);
 				return;
 		}
+	}
+
+	public ping() {
+		this.next({type: 'ping', id: new Date().getTime()});
+		setTimeout(() => this.ping(), 60000);
+	}
+
+	private _processPong(message: any): void {
+		const response = new Date().getTime();
+		this._ping = response - message.id;
+		this._userManager.ping(this._ping);
 	}
 
 	private _checkSession(): void {

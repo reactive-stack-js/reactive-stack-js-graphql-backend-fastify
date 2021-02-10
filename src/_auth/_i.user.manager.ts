@@ -3,12 +3,14 @@
 
 export type UserManagerRefreshType = {
 	type: 'refresh';
-	payload: {jwt: string; user: any};
+	payload: { jwt: string; user: any };
 	refresh_in: number;
 };
 
 export default interface IUserManager {
 	connected(jwt: any): void;
+
+	ping(ping: number): void;
 
 	location(location: string): void;
 

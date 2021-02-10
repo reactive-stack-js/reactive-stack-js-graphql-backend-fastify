@@ -19,6 +19,10 @@ export default class UserManager implements IUserManager {
 		// TODO: update database
 	}
 
+	ping(ping: number): void {
+		// TODO: update database
+	}
+
 	location(location: string): void {
 		// TODO: update database
 	}

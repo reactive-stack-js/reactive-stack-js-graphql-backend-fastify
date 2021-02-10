@@ -29,6 +29,8 @@ export default (connection: SocketStream): void => {
 		complete: (): void => console.log('completed')
 	});
 
+	client.ping();
+
 	socket.on('message', async (message: string) => {
 		console.log(' - message:', message);
 		message = JSON.parse(message);
