@@ -32,6 +32,7 @@ export default abstract class AStore extends Subject<any> {
 	protected _sort: any;
 	protected _fields: any;
 	protected _paging: any;
+	protected _populates: string[];
 
 	protected _subscription: Subscription;
 
@@ -44,6 +45,7 @@ export default abstract class AStore extends Subject<any> {
 		this._sort = {};
 		this._fields = {};
 		this._paging = {};
+		this._populates = [];
 	}
 
 	public destroy(): void {
@@ -56,9 +58,10 @@ export default abstract class AStore extends Subject<any> {
 	protected abstract restartSubscription(): void;
 
 	protected extractFromConfig(): void {
-		const {query = {}, sort = {}, fields = {}} = this._config;
+		const {query = {}, sort = {}, fields = {}, populates = []} = this._config;
 		this._query = query;
 		this._sort = sort;
+		this._populates = populates;
 
 		this._fields = fields;
 		if (isArray(fields)) {

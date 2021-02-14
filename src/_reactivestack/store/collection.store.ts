@@ -38,6 +38,12 @@ export default class CollectionStore extends AStore {
 		const total = await this._model.countDocuments(this._query);
 		if (total > 0) data = await this._model.find(this._query, this._fields, this._paging).sort(this._sort);
 
+		if (!isEmpty(this._populates)) {
+			for (const populate of this._populates) {
+				await this._model.populate(data, {path: populate});
+			}
+		}
+
 		this.emit({total, data});
 	}
 

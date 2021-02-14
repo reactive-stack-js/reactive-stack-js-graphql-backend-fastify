@@ -45,6 +45,12 @@ export default class DocumentStore extends AStore {
 		else if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
 		else data = !isEmpty(document) ? document : await this._loadDocument();
 
+		if (!isEmpty(this._populates)) {
+			for (const populate of this._populates) {
+				await data.populate(populate).execPopulate();
+			}
+		}
+
 		this.emit(data);
 	}
 
