@@ -2,7 +2,7 @@
 'use strict';
 
 import sift from 'sift';
-import {concat, intersection, isEmpty, keys, omit} from 'lodash';
+import {concat, get, intersection, isEmpty, keys, omit} from 'lodash';
 import {Model} from 'mongoose';
 
 import AStore, {EStoreType} from './_a.store';
@@ -25,12 +25,8 @@ export default class CollectionStore extends AStore {
 		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
 		if (isEmpty(this._config)) return this.emit();
 
-		const {
-			operationType: type,
-			documentKey: {_id: key},
-			updateDescription: description,
-			fullDocument: document
-		} = change;
+		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
+		const key = get(documentKey, '_id');
 
 		let reload = false;
 		if (isEmpty(change)) {

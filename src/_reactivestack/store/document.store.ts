@@ -37,12 +37,8 @@ export default class DocumentStore extends AStore {
 		if (isEmpty(this._config)) return this.emit();
 
 		const id = _getIdFromQuery(this._query);
-		const {
-			operationType: type,
-			documentKey: {_id: key},
-			updateDescription: description,
-			fullDocument: document
-		} = change;
+		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
+		const key = get(documentKey, '_id');
 
 		let reload = false;
 		if (isEmpty(change)) {
@@ -93,7 +89,9 @@ export default class DocumentStore extends AStore {
 	private _pipeFilter(change: any): boolean {
 		if (!isEmpty(this._sort)) return true;
 
-		const {operationType: type, documentKey: {_id: key}, fullDocument: document} = change;
+		const {operationType: type, documentKey, fullDocument: document} = change;
+		const key = get(documentKey, '_id');
+
 		if ('delete' === type) return true;
 		if (key === _getIdFromQuery(this._query)) return true;
 
