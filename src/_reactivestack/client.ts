@@ -31,7 +31,6 @@ export default class Client extends Subject<any> {
 		// console.log(" - Client::consume received message", message.type);
 
 		switch (message.type) {
-
 			case 'pong':
 				this._processPong(message);
 				return;

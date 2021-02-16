@@ -2,12 +2,11 @@
 'use strict';
 
 import sift from 'sift';
-import {isEmpty, omit} from 'lodash';
+import {concat, intersection, isEmpty, keys, omit} from 'lodash';
 import {Model} from 'mongoose';
 
 import AStore, {EStoreType} from './_a.store';
 import observableModel from '../util/_f.observable.model';
-import {filter} from 'rxjs/operators';
 
 export default class CollectionStore extends AStore {
 	constructor(model: Model<any>, target: string) {
@@ -17,65 +16,71 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model)
-			.pipe(filter((change) => this._pipeFilter(change)))
-			.subscribe({
-				next: (change: any): Promise<void> => this.load(change)
-			});
+		this.subscription = observableModel(this.model).subscribe({
+			next: (change: any): Promise<void> => this.load(change)
+		});
 	}
 
 	protected async load(change: any): Promise<void> {
-		// console.log(" - CollectionStore load", this._field, this._query, this._sort, this._fields, this._paging);
+		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
 		if (isEmpty(this._config)) return this.emit();
 
-		if (this._incremental) {
-			const {operationType, documentKey, fullDocument: document} = change;
-			if ('delete' === operationType) return this.emitDelete(documentKey);
+		const {operationType: type, documentKey: key, updateDescription: description, fullDocument: document} = change;
 
-			const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
-			const valid = test(document);
-			if (valid && !isEmpty(document)) {
-				if (!isEmpty(this._populates)) {
-					for (const populate of this._populates) {
-						await this._model.populate(document, {path: populate});
+		let reload = false;
+		if (isEmpty(change)) {
+			reload = true;
+		} else {
+			switch (type) {
+				case 'delete':
+					reload = true;
+					break;
+
+				case 'insert':
+				case 'replace':
+					reload = true;
+					if (!isEmpty(this._query)) {
+						const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
+						reload = test(document);
 					}
+					break;
+
+				case 'update':
+					const qs = keys(this._query);
+					const {updatedFields, removedFields} = description;
+					const us = concat(removedFields, keys(updatedFields));
+					reload = !isEmpty(intersection(qs, us));
+					break;
+			}
+		}
+
+		if (reload) {
+			if (document && this._incremental) {
+				if ('delete' === type) return this.emitDelete(key);
+
+				for (const populate of this._populates) {
+					await this._model.populate(document, {path: populate});
 				}
 				return this.emit({data: document});
-			}
-			return;
-		}
+			} else {
+				let data = [];
+				const total = await this._model.countDocuments(this._query);
+				if (total > 0) data = await this._model.find(this._query, this._fields, this._paging).sort(this._sort);
 
-		let data = [];
-		const total = await this._model.countDocuments(this._query);
-		if (total > 0) data = await this._model.find(this._query, this._fields, this._paging).sort(this._sort);
-
-		if (!isEmpty(this._populates)) {
-			for (const populate of this._populates) {
-				await this._model.populate(data, {path: populate});
+				for (const populate of this._populates) {
+					await this._model.populate(data, {path: populate});
+				}
+				this.emit({total, data});
 			}
 		}
-
-		this.emit({total, data});
-	}
-
-	private _pipeFilter(change: any): boolean {
-		if (!this._strict) return true;
-
-		const {operationType, fullDocument: document} = change;
-		if (!document && 'delete' === operationType) return true;
-
-		const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
-		return test(document);
 	}
 
 	protected extractFromConfig(): void {
 		super.extractFromConfig();
 
-		const {strict = false, incremental = false} = this._config;
+		const {incremental = false, page = 1, pageSize} = this._config;
 		this._incremental = incremental;
-		this._strict = this._incremental ? true : strict;
 
-		const {page = 1, pageSize} = this._config;
 		this._paging = {};
 		if (pageSize) {
 			this._paging = {

@@ -3,7 +3,7 @@
 
 export type UserManagerRefreshType = {
 	type: 'refresh';
-	payload: { jwt: string; user: any };
+	payload: {jwt: string; user: any};
 	refresh_in: number;
 };
 
