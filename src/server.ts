@@ -37,7 +37,7 @@ server.register(fastifyGQL, {
 		'editor.theme': 'light',
 		'prettier.tabWidth': 3,
 		'prettier.useTabs': true,
-		'prettier.printWidth': 60,
+		'prettier.printWidth': 180,
 		'editor.cursorShape': 'line',
 		'editor.fontFamily': "'Consolas'",
 		'editor.reuseHeaders': true,
