@@ -25,11 +25,12 @@ export default class CollectionStore extends AStore {
 		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
 		if (isEmpty(this._config)) return this.emit();
 
-		const {operationType: type, documentKey: key, updateDescription: description, fullDocument: document} = change;
+		const {operationType: type, documentKey: {_id: key}, updateDescription: description, fullDocument: document} = change;
 
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
+
 		} else {
 			switch (type) {
 				case 'delete':
