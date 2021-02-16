@@ -29,9 +29,20 @@ export default class CollectionStore extends AStore {
 		if (isEmpty(this._config)) return this.emit();
 
 		if (this._incremental) {
-			const {operationType, fullDocument: document} = change;
-			if ('delete' === operationType) return this.emit();
-			if (!isEmpty(document)) return this.emit({data: document});
+			const {operationType, documentKey, fullDocument: document} = change;
+			if ('delete' === operationType) return this.emitDelete(documentKey);
+
+			const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
+			const valid = test(document);
+			if (valid && !isEmpty(document)) {
+				if (!isEmpty(this._populates)) {
+					for (const populate of this._populates) {
+						await this._model.populate(document, {path: populate});
+					}
+				}
+				return this.emit({data: document});
+			}
+			return;
 		}
 
 		let data = [];

@@ -86,6 +86,14 @@ export default abstract class AStore extends Subject<any> {
 		if (this._isCollection()) return this._emitMany(update);
 	}
 
+	protected emitDelete(deleted: any): void {
+		this.next({
+			type: 'delete',
+			target: this._target,
+			payload: deleted
+		});
+	}
+
 	public set config(config: any) {
 		if (!this._isValidConfig(config)) return;
 

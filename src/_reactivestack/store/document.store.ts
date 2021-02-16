@@ -9,7 +9,7 @@ import AStore, {EStoreType} from './_a.store';
 import observableModel from '../util/_f.observable.model';
 
 // tslint:disable-next-line:variable-name
-const __getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id'));
+const _getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id'));
 
 export default class DocumentStore extends AStore {
 	constructor(model: any, target: string) {
@@ -36,11 +36,11 @@ export default class DocumentStore extends AStore {
 	protected async load(change: any): Promise<void> {
 		if (isEmpty(this._config)) return this.emit();
 
-		const {operationType, fullDocument: document} = change;
-		if ('delete' === operationType) return this.emit();
+		const id = _getIdFromQuery(this._query);
+		const {operationType, documentKey, fullDocument: document} = change;
+		if ('delete' === operationType && id === documentKey) return this.emitDelete(documentKey);
 
 		let data;
-		const id = __getIdFromQuery(this._query);
 		if (id) data = !isEmpty(document) ? document : await this._loadDocumentById(id);
 		else if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
 		else data = !isEmpty(document) ? document : await this._loadDocument();
@@ -58,7 +58,7 @@ export default class DocumentStore extends AStore {
 		const {operationType, fullDocument: document} = change;
 		if (!document && 'delete' === operationType) return true;
 
-		const id = __getIdFromQuery(this._query);
+		const id = _getIdFromQuery(this._query);
 		if (id) return id === toString(document._id);
 		else if (!isEmpty(this._sort)) return true;
 		// Must reload...
