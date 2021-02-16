@@ -25,12 +25,16 @@ export default class CollectionStore extends AStore {
 		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
 		if (isEmpty(this._config)) return this.emit();
 
-		const {operationType: type, documentKey: {_id: key}, updateDescription: description, fullDocument: document} = change;
+		const {
+			operationType: type,
+			documentKey: {_id: key},
+			updateDescription: description,
+			fullDocument: document
+		} = change;
 
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
-
 		} else {
 			switch (type) {
 				case 'delete':
@@ -55,24 +59,24 @@ export default class CollectionStore extends AStore {
 			}
 		}
 
-		if (reload) {
-			if (document && this._incremental) {
-				if ('delete' === type) return this.emitDelete(key);
+		if (!reload) return;
 
-				for (const populate of this._populates) {
-					await this._model.populate(document, {path: populate});
-				}
-				return this.emit({data: document});
-			} else {
-				let data = [];
-				const total = await this._model.countDocuments(this._query);
-				if (total > 0) data = await this._model.find(this._query, this._fields, this._paging).sort(this._sort);
+		if (document && this._incremental) {
+			if ('delete' === type) return this.emitDelete(key);
 
-				for (const populate of this._populates) {
-					await this._model.populate(data, {path: populate});
-				}
-				this.emit({total, data});
+			for (const populate of this._populates) {
+				await this._model.populate(document, {path: populate});
 			}
+			return this.emit({data: document});
+		} else {
+			let data = [];
+			const total = await this._model.countDocuments(this._query);
+			if (total > 0) data = await this._model.find(this._query, this._fields, this._paging).sort(this._sort);
+
+			for (const populate of this._populates) {
+				await this._model.populate(data, {path: populate});
+			}
+			this.emit({total, data});
 		}
 	}
 

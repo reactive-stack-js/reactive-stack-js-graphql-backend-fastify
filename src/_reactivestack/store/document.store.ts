@@ -3,7 +3,7 @@
 
 import sift from 'sift';
 import {filter} from 'rxjs/operators';
-import {isString, get, isEmpty, toString, first} from 'lodash';
+import {isString, get, isEmpty, first, omit, keys, concat, intersection} from 'lodash';
 
 import AStore, {EStoreType} from './_a.store';
 import observableModel from '../util/_f.observable.model';
@@ -37,35 +37,68 @@ export default class DocumentStore extends AStore {
 		if (isEmpty(this._config)) return this.emit();
 
 		const id = _getIdFromQuery(this._query);
-		const {operationType, documentKey, fullDocument: document} = change;
-		if ('delete' === operationType && id === documentKey) return this.emitDelete(documentKey);
+		const {
+			operationType: type,
+			documentKey: {_id: key},
+			updateDescription: description,
+			fullDocument: document
+		} = change;
+
+		let reload = false;
+		if (isEmpty(change)) {
+			reload = true;
+		} else {
+			switch (type) {
+				case 'delete':
+					if (id === key) return this.emitDelete(key);
+					reload = true;
+					break;
+
+				case 'insert':
+				case 'replace':
+					if (id) return;
+
+					if (!isEmpty(this._query)) {
+						const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
+						reload = test(document);
+					}
+					break;
+
+				case 'update':
+					if (id === key) reload = true;
+					else {
+						const qs = keys(this._query);
+						const {updatedFields, removedFields} = description;
+						const us = concat(removedFields, keys(updatedFields));
+						reload = !isEmpty(intersection(qs, us));
+						break;
+					}
+			}
+		}
+
+		if (!reload) return;
 
 		let data;
-		if (id) data = !isEmpty(document) ? document : await this._loadDocumentById(id);
-		else if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
-		else data = !isEmpty(document) ? document : await this._loadDocument();
+		if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
+		else if (document) data = document;
+		else data = id ? await this._loadDocumentById(id) : await this._loadDocument();
 
-		if (!isEmpty(this._populates)) {
-			for (const populate of this._populates) {
-				await data.populate(populate).execPopulate();
-			}
+		for (const populate of this._populates) {
+			await data.populate(populate).execPopulate();
 		}
 
 		this.emit(data);
 	}
 
 	private _pipeFilter(change: any): boolean {
-		const {operationType, fullDocument: document} = change;
-		if (!document && 'delete' === operationType) return true;
+		if (!isEmpty(this._sort)) return true;
 
-		const id = _getIdFromQuery(this._query);
-		if (id) return id === toString(document._id);
-		else if (!isEmpty(this._sort)) return true;
-		// Must reload...
-		else {
-			const test = sift(this._query);
-			return test(document);
-		}
+		const {operationType: type, documentKey: {_id: key}, fullDocument: document} = change;
+		if ('delete' === type) return true;
+		if (key === _getIdFromQuery(this._query)) return true;
+
+		const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
+		return test(document);
 	}
 
 	private async _loadDocumentById(id: string): Promise<any> {
