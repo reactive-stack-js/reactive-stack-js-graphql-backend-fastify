@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import {isEmpty} from 'lodash';
+import {concat, intersection, isEmpty, keys} from 'lodash';
 import {Model} from 'mongoose';
 
 import observableModel from '../util/_f.observable.model';
@@ -16,13 +16,26 @@ export default class CountStore extends AStore {
 
 	protected restartSubscription(): void {
 		this.subscription = observableModel(this.model).subscribe({
-			next: (c: any): Promise<void> => this.load()
+			next: (change: any): Promise<void> => this.load(change)
 		});
 	}
 
-	protected async load(): Promise<void> {
+	protected async load(change: any): Promise<void> {
 		if (isEmpty(this._config)) return this.emit();
-		const count = await this._model.countDocuments(this._query);
-		this.emit(count);
+
+		const {operationType: type, updateDescription: description} = change;
+
+		let reload = true;
+		if ('update' === type) {
+			const qs = keys(this._query);
+			const {updatedFields, removedFields} = description;
+			const us = concat(removedFields, keys(updatedFields));
+			reload = !isEmpty(intersection(qs, us));
+		}
+
+		if (reload) {
+			const count = await this._model.countDocuments(this._query);
+			this.emit(count);
+		}
 	}
 }
