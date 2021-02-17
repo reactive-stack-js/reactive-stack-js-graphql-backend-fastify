@@ -26,7 +26,7 @@ export default abstract class AStore extends Subject<any> {
 
 	protected _config: any;
 	protected _strict: false;
-	protected _incremental: false;
+	protected _incremental: boolean = false;
 
 	protected _query: any;
 	protected _sort: any;

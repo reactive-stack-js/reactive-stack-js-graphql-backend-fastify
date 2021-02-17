@@ -31,6 +31,7 @@ export default class CollectionStore extends AStore {
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
+
 		} else {
 			switch (type) {
 				case 'delete':
@@ -47,10 +48,16 @@ export default class CollectionStore extends AStore {
 					break;
 
 				case 'update':
+					const fs = keys(this._fields);
 					const qs = keys(this._query);
+
 					const {updatedFields, removedFields} = description;
 					const us = concat(removedFields, keys(updatedFields));
-					reload = !isEmpty(intersection(qs, us));
+
+					const checkFields = isEmpty(intersection(fs, us));
+					const checkQuery = isEmpty(intersection(qs, us));
+
+					reload = !checkFields || !checkQuery;
 					break;
 			}
 		}
@@ -64,6 +71,7 @@ export default class CollectionStore extends AStore {
 				await this._model.populate(document, {path: populate});
 			}
 			return this.emit({data: document});
+
 		} else {
 			let data = [];
 			const total = await this._model.countDocuments(this._query);
