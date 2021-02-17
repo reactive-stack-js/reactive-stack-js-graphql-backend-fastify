@@ -43,6 +43,7 @@ export default class DocumentStore extends AStore {
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
+
 		} else {
 			switch (type) {
 				case 'delete':
@@ -51,30 +52,25 @@ export default class DocumentStore extends AStore {
 					break;
 
 				case 'insert':
-				case 'replace':
 					if (id) return;
-
+					reload = true;
 					if (!isEmpty(this._query)) {
 						const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
 						reload = test(document);
 					}
 					break;
 
+				case 'replace':
 				case 'update':
-					if (id === key) reload = true;
+					if (id && id === key) reload = true;
+					else if (isEmpty(this._query)) reload = true;
 					else {
-						const fs = keys(this._fields);
 						const qs = keys(this._query);
-
 						const {updatedFields, removedFields} = description;
 						const us = concat(removedFields, keys(updatedFields));
-
-						const checkFields = isEmpty(intersection(fs, us));
-						const checkQuery = isEmpty(intersection(qs, us));
-
-						reload = !checkFields || !checkQuery;
-						break;
+						reload = !isEmpty(intersection(qs, us));
 					}
+					break;
 			}
 		}
 

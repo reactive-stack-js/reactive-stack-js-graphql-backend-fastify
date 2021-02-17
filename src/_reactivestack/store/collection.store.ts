@@ -33,31 +33,25 @@ export default class CollectionStore extends AStore {
 			reload = true;
 
 		} else {
+			const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
 			switch (type) {
 				case 'delete':
 					reload = true;
 					break;
 
 				case 'insert':
-				case 'replace':
 					reload = true;
-					if (!isEmpty(this._query)) {
-						const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
-						reload = test(document);
-					}
+					if (!isEmpty(this._query)) reload = test(document);
+
 					break;
 
+				case 'replace':
 				case 'update':
-					const fs = keys(this._fields);
 					const qs = keys(this._query);
-
 					const {updatedFields, removedFields} = description;
 					const us = concat(removedFields, keys(updatedFields));
 
-					const checkFields = isEmpty(intersection(fs, us));
-					const checkQuery = isEmpty(intersection(qs, us));
-
-					reload = !checkFields || !checkQuery;
+					reload = !isEmpty(intersection(qs, us)) || test(document);
 					break;
 			}
 		}
