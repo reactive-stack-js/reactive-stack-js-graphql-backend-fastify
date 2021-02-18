@@ -18,6 +18,6 @@ const authenticate = async (providerUser: any, expiresIn: number): Promise<any |
 
 	if (!dbUser) return undefined;
 
-	return merge(pick(dbUser, ['id', 'name', 'email', 'picture', 'provider', 'providerId']), jwtTokenTimes(expiresIn));
+	return merge(pick(dbUser, ['_id', 'name', 'email', 'picture', 'provider', 'providerId']), jwtTokenTimes(expiresIn));
 };
 export default authenticate;
