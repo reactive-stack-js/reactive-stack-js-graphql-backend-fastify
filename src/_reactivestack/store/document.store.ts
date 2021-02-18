@@ -43,7 +43,6 @@ export default class DocumentStore extends AStore {
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
-
 		} else {
 			switch (type) {
 				case 'delete':

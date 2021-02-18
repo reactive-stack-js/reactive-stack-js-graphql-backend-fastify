@@ -31,7 +31,6 @@ export default class CollectionStore extends AStore {
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
-
 		} else {
 			const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
 			switch (type) {
@@ -65,7 +64,6 @@ export default class CollectionStore extends AStore {
 				await this._model.populate(document, {path: populate});
 			}
 			return this.emit({data: document});
-
 		} else {
 			let data = [];
 			const total = await this._model.countDocuments(this._query);

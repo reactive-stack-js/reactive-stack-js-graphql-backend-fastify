@@ -109,9 +109,5 @@ startFastifyServer()
 	.then(() => ({}))
 	.catch((err) => console.error('Server Error:', err));
 
-process.on('uncaughtException', (reason: string, p: Promise<any>): void =>
-	console.error('Uncaught Exception at:', p, 'reason:', reason)
-);
-process.on('unhandledRejection', (reason: string, p: Promise<any>): void =>
-	console.error('Unhandled Rejection at:', p, 'reason:', reason)
-);
+process.on('uncaughtException', (reason: string, p: Promise<any>): void => console.error('Uncaught Exception at:', p, 'reason:', reason));
+process.on('unhandledRejection', (reason: string, p: Promise<any>): void => console.error('Unhandled Rejection at:', p, 'reason:', reason));

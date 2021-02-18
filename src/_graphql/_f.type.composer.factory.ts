@@ -13,11 +13,7 @@ const _createTargetName = (name: string): string => {
 	return _.join(parts, 'Document');
 };
 
-const graphQLTypeComposerFactory = (
-	model: Model<any>,
-	name: string,
-	additionalFields?: any
-): ObjectTypeComposer<any, any> => {
+const graphQLTypeComposerFactory = (model: Model<any>, name: string, additionalFields?: any): ObjectTypeComposer<any, any> => {
 	const tc = composeWithMongoose(model, {name});
 	const type = tc.getType();
 
