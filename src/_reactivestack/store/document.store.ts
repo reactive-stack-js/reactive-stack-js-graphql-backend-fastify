@@ -65,9 +65,12 @@ export default class DocumentStore extends AStore {
 					else if (isEmpty(this._query)) reload = true;
 					else {
 						const qs = keys(this._query);
-						const {updatedFields, removedFields} = description;
-						const us = concat(removedFields, keys(updatedFields));
-						reload = !isEmpty(intersection(qs, us));
+						if (!description) reload = true;
+						else {
+							const {updatedFields, removedFields} = description;
+							const us = concat(removedFields, keys(updatedFields));
+							reload = !isEmpty(intersection(qs, us));
+						}
 					}
 					break;
 			}

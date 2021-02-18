@@ -46,9 +46,12 @@ export default class CollectionStore extends AStore {
 
 				case 'replace':
 				case 'update':
+					let us = [];
 					const qs = keys(this._query);
-					const {updatedFields, removedFields} = description;
-					const us = concat(removedFields, keys(updatedFields));
+					if (description) {
+						const {updatedFields, removedFields} = description;
+						us = concat(removedFields, keys(updatedFields));
+					}
 
 					reload = !isEmpty(intersection(qs, us)) || test(document);
 					break;

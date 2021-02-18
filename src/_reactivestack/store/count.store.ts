@@ -28,9 +28,12 @@ export default class CountStore extends AStore {
 		let reload = true;
 		if ('update' === type) {
 			const qs = keys(this._query);
-			const {updatedFields, removedFields} = description;
-			const us = concat(removedFields, keys(updatedFields));
-			reload = !isEmpty(intersection(qs, us));
+			if (!description) reload = true;
+			else {
+				const {updatedFields, removedFields} = description;
+				const us = concat(removedFields, keys(updatedFields));
+				reload = !isEmpty(intersection(qs, us));
+			}
 		}
 
 		if (reload) {
