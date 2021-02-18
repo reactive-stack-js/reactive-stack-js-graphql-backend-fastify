@@ -12,7 +12,7 @@ import CollectionsModelsMap from '../_reactivestack/util/collections.models.map'
 
 const _hasItemId = (model: Model<any>): boolean => includes(keys(model.schema.paths), 'itemId');
 
-const _getUserId = (context: any): string => get(context, 'reply.request.user.id', null);
+const _getUserId = (context: any): string => get(context, 'reply.request.user._id', null);
 
 // TODO: extend to verify permissions, see below for usage
 const _authorize = (context: any): boolean => {
