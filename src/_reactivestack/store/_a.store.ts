@@ -63,10 +63,12 @@ export default abstract class AStore extends Subject<any> {
 		this._sort = sort;
 		this._populates = populates;
 
-		this._fields = fields;
 		if (isArray(fields)) {
 			this._fields = {};
 			each(fields, (field: string) => set(this._fields, field, 1));
+
+		} else {
+			this._fields = fields;
 		}
 	}
 
