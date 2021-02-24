@@ -24,7 +24,7 @@ export default class UserManager implements IUserManager {
 		const user = jsonwebtoken.verify(jwt, this._jwtSecret);
 		if (user) {
 			this._user = user;
-			const userId = get(this._user, '_id');
+			const userId = get(this._user, '_id', '').toString();
 			if (userId) {
 				// TODO: update database
 				// await User.updateOne({_id: userId}, {$set: {online: true}});
@@ -34,7 +34,7 @@ export default class UserManager implements IUserManager {
 	}
 
 	ping(ping: number): void {
-		const userId = get(this._user, '_id');
+		const userId = get(this._user, '_id', '').toString();
 		if (userId) {
 			// TODO: update database
 			// await User.updateOne({_id: userId}, {$set: {ping}});
@@ -44,7 +44,7 @@ export default class UserManager implements IUserManager {
 	location(location: string): void {
 		if (location === 'odjava') return this.disconnected();
 		this._location = location;
-		const userId = get(this._user, '_id');
+		const userId = get(this._user, '_id', '').toString();
 		if (userId) {
 			// TODO: update database
 			// await User.updateOne({_id: userId}, {$set: {location: this._location}});
@@ -52,7 +52,7 @@ export default class UserManager implements IUserManager {
 	}
 
 	disconnected(): void {
-		const userId = get(this._user, '_id');
+		const userId = get(this._user, '_id', '').toString();
 		if (userId) {
 			// TODO: update database
 			// await User.updateOne({_id: userId}, {$set: {online: false}});

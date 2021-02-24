@@ -26,7 +26,7 @@ export default class CollectionStore extends AStore {
 		if (isEmpty(this._config)) return this.emit();
 
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
-		const key = get(documentKey, '_id');
+		const key = get(documentKey, '_id', '').toString();
 
 		let reload = false;
 		if (isEmpty(change)) {

@@ -38,7 +38,7 @@ export default class DocumentStore extends AStore {
 
 		const id = _getIdFromQuery(this._query);
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
-		const key = get(documentKey, '_id');
+		const key = get(documentKey, '_id', '').toString();
 
 		let reload = false;
 		if (isEmpty(change)) {
@@ -94,7 +94,7 @@ export default class DocumentStore extends AStore {
 		if (!isEmpty(this._sort)) return true;
 
 		const {operationType: type, documentKey, fullDocument: document} = change;
-		const key = get(documentKey, '_id');
+		const key = get(documentKey, '_id', '').toString();
 
 		if ('delete' === type) return true;
 		if (key === _getIdFromQuery(this._query)) return true;
