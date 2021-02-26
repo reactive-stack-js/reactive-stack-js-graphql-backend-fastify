@@ -80,7 +80,6 @@ export default class DocumentStore extends AStore {
 
 		let data;
 		if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
-		else if (document) data = document;
 		else data = id ? await this._loadDocumentById(id) : await this._loadDocument();
 
 		for (const populate of this._populates) {
