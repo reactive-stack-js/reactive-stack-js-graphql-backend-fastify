@@ -10,6 +10,7 @@ import AStore from './store/_a.store';
 import storeFactory from './store/_f.store.factory';
 import {StoreSubscriptionUpdateType} from './store/_t.store';
 import IUserManager from '../_auth/_i.user.manager';
+import DataProcessorsMap from "./util/data.processors.map";
 
 export default class Client extends Subject<any> {
 	private _userManager: IUserManager;
@@ -114,7 +115,13 @@ export default class Client extends Subject<any> {
 
 			this._stores.set(target, store);
 			const subscription = store.subscribe({
-				next: (m: any): void => this.next(m),
+				next: (m: any): void => {
+					if (DataProcessorsMap.hasProcessor(scope, observe)) {
+						const process = DataProcessorsMap.getProcessor(scope, observe);
+						m = process(m);
+					}
+					this.next(m);
+				},
 				error: (e: any): void => this.error(e),
 				complete: (): void => this.complete()
 			});
