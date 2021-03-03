@@ -115,10 +115,10 @@ export default class Client extends Subject<any> {
 
 			this._stores.set(target, store);
 			const subscription = store.subscribe({
-				next: (m: any): void => {
+				next: async (m: any): Promise<void> => {
 					if (DataProcessorsMap.hasProcessor(scope, observe)) {
 						const process = DataProcessorsMap.getProcessor(scope, observe);
-						m = process(m);
+						m = await process(this._userManager.user, m);
 					}
 					this.next(m);
 				},
