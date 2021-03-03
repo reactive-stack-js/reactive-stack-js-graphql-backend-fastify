@@ -8,6 +8,8 @@ export type UserManagerRefreshType = {
 };
 
 export default interface IUserManager {
+	user(): any;
+
 	connected(jwt: any): void;
 
 	ping(ping: number): void;

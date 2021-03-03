@@ -118,7 +118,7 @@ export default class Client extends Subject<any> {
 				next: async (m: any): Promise<void> => {
 					if (DataProcessorsMap.hasProcessor(scope, observe)) {
 						const process = DataProcessorsMap.getProcessor(scope, observe);
-						m = await process(this._userManager.user, m);
+						m = await process(m, this._userManager.user);
 					}
 					this.next(m);
 				},

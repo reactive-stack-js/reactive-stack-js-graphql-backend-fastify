@@ -18,6 +18,10 @@ export default class UserManager implements IUserManager {
 		this._location = '';
 	}
 
+	public get user(): any {
+		return this._user;
+	}
+
 	public connected(jwt: any): void {
 		this._jwt = jwt;
 
