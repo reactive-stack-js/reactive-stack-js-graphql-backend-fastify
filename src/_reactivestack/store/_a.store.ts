@@ -82,10 +82,18 @@ export default abstract class AStore extends Subject<any> {
 		return this._model;
 	}
 
-	protected emit(update: any = {}): void {
-		if (this._isCount()) return this._emitOne(update);
-		if (this._isDocument()) return this._emitOne(update);
-		if (this._isCollection()) return this._emitMany(update);
+	protected emitOne(update: any = {}): void {
+		const message = _baseMessage(this._target, this._incremental);
+		set(message.payload, this._target, update);
+		this.next(message);
+	}
+
+	protected emitMany(update: any = {total: 0, data: []}): void {
+		const {total, data} = update;
+		const message = _baseMessage(this._target, this._incremental);
+		set(message.payload, this._target, data);
+		if (!this._incremental) set(message.payload, '_' + this._target + 'Count', total);
+		this.next(message);
 	}
 
 	protected emitDelete(deleted: any): void {
@@ -124,19 +132,5 @@ export default abstract class AStore extends Subject<any> {
 		if (!config) return false;
 		const diff = jsondiffpatch.diff(this._config, config);
 		return !isEmpty(diff);
-	}
-
-	private _emitOne(update: any): void {
-		const message = _baseMessage(this._target, this._incremental);
-		set(message.payload, this._target, update);
-		this.next(message);
-	}
-
-	private _emitMany(update: any = {total: 0, data: []}): void {
-		const {total, data} = update;
-		const message = _baseMessage(this._target, this._incremental);
-		set(message.payload, this._target, data);
-		if (!this._incremental) set(message.payload, '_' + this._target + 'Count', total);
-		this.next(message);
 	}
 }

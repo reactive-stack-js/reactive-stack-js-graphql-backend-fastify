@@ -34,7 +34,7 @@ export default class DocumentStore extends AStore {
 	}
 
 	protected async load(change: any): Promise<void> {
-		if (isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emitOne();
 
 		const id = _getIdFromQuery(this._query);
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
@@ -86,7 +86,7 @@ export default class DocumentStore extends AStore {
 			await data.populate(populate).execPopulate();
 		}
 
-		this.emit(data);
+		this.emitOne(data);
 	}
 
 	private _pipeFilter(change: any): boolean {

@@ -23,7 +23,7 @@ export default class CollectionStore extends AStore {
 
 	protected async load(change: any): Promise<void> {
 		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
-		if (isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emitMany();
 
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
 		const key = get(documentKey, '_id', '').toString();
@@ -66,7 +66,7 @@ export default class CollectionStore extends AStore {
 			for (const populate of this._populates) {
 				await this._model.populate(document, {path: populate});
 			}
-			return this.emit({data: document});
+			return this.emitMany({data: document});
 		} else {
 			let data = [];
 			const total = await this._model.countDocuments(this._query);
@@ -75,7 +75,7 @@ export default class CollectionStore extends AStore {
 			for (const populate of this._populates) {
 				await this._model.populate(data, {path: populate});
 			}
-			this.emit({total, data});
+			this.emitMany({total, data});
 		}
 	}
 
