@@ -48,7 +48,7 @@ export default class CollectionStore extends AStore {
 				case 'replace':
 				case 'update':
 					let us = [];
-					const qs = keys(this._query);
+					const qs = keys(this._fields);
 					if (description) {
 						const {updatedFields, removedFields} = description;
 						us = concat(removedFields, keys(updatedFields));
@@ -59,6 +59,7 @@ export default class CollectionStore extends AStore {
 		}
 
 		if (!reload) return;
+		console.log(' - Reload Collection for query:', this._query);
 
 		if (document && this._incremental) {
 			if ('delete' === type) return this.emitDelete(key);
@@ -67,6 +68,7 @@ export default class CollectionStore extends AStore {
 				await this._model.populate(document, {path: populate});
 			}
 			return this.emitMany({data: document});
+
 		} else {
 			let data = [];
 			const total = await this._model.countDocuments(this._query);

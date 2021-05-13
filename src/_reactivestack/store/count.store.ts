@@ -28,7 +28,7 @@ export default class CountStore extends AStore {
 
 		let reload = true;
 		if ('update' === type) {
-			const qs = keys(this._query);
+			const qs = keys(this._fields);
 			if (!description) reload = true;
 			else {
 				const {updatedFields, removedFields} = description;
@@ -38,6 +38,7 @@ export default class CountStore extends AStore {
 		}
 
 		if (reload) {
+			console.log(' - Reload Count for query:', this._query);
 			const count = await this._model.countDocuments(this._query);
 			this.emitOne(count);
 		}

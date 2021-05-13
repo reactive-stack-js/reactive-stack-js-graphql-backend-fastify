@@ -63,9 +63,9 @@ export default class DocumentStore extends AStore {
 				case 'replace':
 				case 'update':
 					if (id && id === key) reload = true;
-					else if (isEmpty(this._query)) reload = true;
+					else if (isEmpty(this._fields)) reload = true;
 					else {
-						const qs = keys(this._query);
+						const qs = keys(this._fields);
 						if (!description) reload = true;
 						else {
 							const {updatedFields, removedFields} = description;
@@ -78,6 +78,7 @@ export default class DocumentStore extends AStore {
 		}
 
 		if (!reload) return;
+		console.log(' - Reload Document for query:', this._query);
 
 		let data;
 		if (!isEmpty(this._sort)) data = await this._loadSortedFirstDocument();
