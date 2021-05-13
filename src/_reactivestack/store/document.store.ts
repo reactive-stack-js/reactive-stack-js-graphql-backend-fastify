@@ -9,7 +9,7 @@ import AStore, {EStoreType} from './_a.store';
 import observableModel from '../util/_f.observable.model';
 
 // tslint:disable-next-line:variable-name
-const _getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id'));
+const _getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id', '').toString());
 
 export default class DocumentStore extends AStore {
 	constructor(model: any, target: string) {
@@ -34,7 +34,7 @@ export default class DocumentStore extends AStore {
 	}
 
 	protected async load(change: any): Promise<void> {
-		if (isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emitOne();
 
 		const id = _getIdFromQuery(this._query);
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
@@ -43,6 +43,7 @@ export default class DocumentStore extends AStore {
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
+
 		} else {
 			switch (type) {
 				case 'delete':
@@ -83,10 +84,10 @@ export default class DocumentStore extends AStore {
 		else data = id ? await this._loadDocumentById(id) : await this._loadDocument();
 
 		for (const populate of this._populates) {
-			await data.populate(populate).execPopulate();
+			if (data.populate) await data.populate(populate).execPopulate();
 		}
 
-		this.emit(data);
+		this.emitOne(data);
 	}
 
 	private _pipeFilter(change: any): boolean {

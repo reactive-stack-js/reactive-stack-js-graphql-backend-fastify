@@ -15,13 +15,14 @@ export default class CountStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model).subscribe({
-			next: (change: any): Promise<void> => this.load(change)
-		});
+		this.subscription = observableModel(this.model)
+			.subscribe({
+				next: (change: any): Promise<void> => this.load(change)
+			});
 	}
 
 	protected async load(change: any): Promise<void> {
-		if (isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emitOne();
 
 		const {operationType: type, updateDescription: description} = change;
 
@@ -38,7 +39,7 @@ export default class CountStore extends AStore {
 
 		if (reload) {
 			const count = await this._model.countDocuments(this._query);
-			this.emit(count);
+			this.emitOne(count);
 		}
 	}
 }

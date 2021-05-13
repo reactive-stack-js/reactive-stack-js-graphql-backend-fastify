@@ -16,14 +16,15 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model).subscribe({
-			next: (change: any): Promise<void> => this.load(change)
-		});
+		this.subscription = observableModel(this.model)
+			.subscribe({
+				next: (change: any): Promise<void> => this.load(change)
+			});
 	}
 
 	protected async load(change: any): Promise<void> {
 		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
-		if (isEmpty(this._config)) return this.emit();
+		if (isEmpty(this._config)) return this.emitMany();
 
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
 		const key = get(documentKey, '_id', '').toString();
@@ -31,6 +32,7 @@ export default class CollectionStore extends AStore {
 		let reload = false;
 		if (isEmpty(change)) {
 			reload = true;
+
 		} else {
 			const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
 			switch (type) {
@@ -41,7 +43,6 @@ export default class CollectionStore extends AStore {
 				case 'insert':
 					reload = true;
 					if (!isEmpty(this._query)) reload = test(document);
-
 					break;
 
 				case 'replace':
@@ -52,7 +53,6 @@ export default class CollectionStore extends AStore {
 						const {updatedFields, removedFields} = description;
 						us = concat(removedFields, keys(updatedFields));
 					}
-
 					reload = !isEmpty(intersection(qs, us)) || test(document);
 					break;
 			}
@@ -66,7 +66,7 @@ export default class CollectionStore extends AStore {
 			for (const populate of this._populates) {
 				await this._model.populate(document, {path: populate});
 			}
-			return this.emit({data: document});
+			return this.emitMany({data: document});
 		} else {
 			let data = [];
 			const total = await this._model.countDocuments(this._query);
@@ -75,7 +75,7 @@ export default class CollectionStore extends AStore {
 			for (const populate of this._populates) {
 				await this._model.populate(data, {path: populate});
 			}
-			this.emit({total, data});
+			this.emitMany({total, data});
 		}
 	}
 
