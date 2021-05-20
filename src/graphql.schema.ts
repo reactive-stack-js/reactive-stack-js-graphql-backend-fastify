@@ -1,8 +1,8 @@
 import * as path from 'path';
 import {GraphQLSchema, GraphQLObjectType} from 'graphql';
 
-import graphQLRootQueryFactory from './_graphql/_f.root.query.factory';
-import graphQLRootMutationsFactory from './_graphql/_f.root.mutations.factory';
+import graphQLRootQueryFactory from './_reactivestack/graphql/factories/_f.root.query.factory';
+import graphQLRootMutationsFactory from './_reactivestack/graphql/factories/_f.root.mutations.factory';
 
 export default new GraphQLSchema({
 	query: new GraphQLObjectType({

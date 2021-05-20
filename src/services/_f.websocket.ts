@@ -5,8 +5,8 @@ import {v4 as uuidv4} from 'uuid';
 import {isString} from 'lodash';
 import {SocketStream} from 'fastify-websocket';
 
-import Client from './_reactivestack/client';
-import UserManager from './_auth/user.manager';
+import Client from '../_reactivestack/client';
+import UserManager from '../_reactivestack/auth/user.manager';
 
 const jwtSecret = process.env.JWT_SECRET;
 

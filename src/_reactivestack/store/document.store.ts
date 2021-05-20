@@ -5,8 +5,8 @@ import sift from 'sift';
 import {filter} from 'rxjs/operators';
 import {isString, get, isEmpty, first, omit, keys, concat, intersection} from 'lodash';
 
-import AStore, {EStoreType} from './_a.store';
-import observableModel from '../util/_f.observable.model';
+import AStore, {EStoreType} from './a.store';
+import observableModel from '../databases/mongodb/services/_f.observable.model';
 
 // tslint:disable-next-line:variable-name
 const _getIdFromQuery = (query: any): string => (isString(query) ? query : get(query, '_id', '').toString());

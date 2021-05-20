@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-import authenticate from '../../_auth/_f.authenticate';
+import authenticate from '../../_reactivestack/auth/services/_f.authenticate';
 
 const GG_APP_ID = process.env.GG_APP_ID;
 const GG_APP_SECRET = process.env.GG_APP_SECRET;

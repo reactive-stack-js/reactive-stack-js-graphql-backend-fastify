@@ -4,8 +4,8 @@
 import {get} from 'lodash';
 import * as jsonwebtoken from 'jsonwebtoken';
 
-import jwtTokenRefresh from './_f.jwt.token.refresh';
-import IUserManager, {UserManagerRefreshType} from './_i.user.manager';
+import jwtTokenRefresh from './services/_f.jwt.token.refresh';
+import IUserManager, {UserManagerRefreshType} from './i.user.manager';
 
 export default class UserManager implements IUserManager {
 	private _location: string;

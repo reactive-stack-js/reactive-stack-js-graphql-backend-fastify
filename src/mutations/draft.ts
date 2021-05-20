@@ -8,7 +8,7 @@ import {GraphQLJSONObject} from 'graphql-type-json';
 import {GraphQLBoolean, GraphQLID, GraphQLString} from 'graphql';
 
 import Draft from '../models/draft';
-import CollectionsModelsMap from '../_reactivestack/util/collections.models.map';
+import CollectionsModelsMap from '../_reactivestack/databases/mongodb/collections.models.map';
 
 const _hasItemId = (model: Model<any>): boolean => includes(keys(model.schema.paths), 'itemId');
 

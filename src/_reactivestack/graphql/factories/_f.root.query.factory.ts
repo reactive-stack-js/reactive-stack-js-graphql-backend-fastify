@@ -9,7 +9,7 @@ import {composeWithMongoose} from 'graphql-compose-mongoose';
 
 import processFolder from './_f.process.folder';
 import graphQLQueryFactory from './_f.query.factory';
-import CollectionsModelsMap from '../_reactivestack/util/collections.models.map';
+import CollectionsModelsMap from '../../databases/mongodb/collections.models.map';
 import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './_f.type.composer.fields.factory';
 
 const _metaData = (model: Model<any>): any => {

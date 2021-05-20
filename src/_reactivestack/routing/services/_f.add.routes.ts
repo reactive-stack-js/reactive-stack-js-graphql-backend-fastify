@@ -7,18 +7,10 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import {FastifyInstance} from 'fastify';
 import {IncomingMessage, Server, ServerResponse} from 'http';
+import cleanRelativePath from "./_f.clean.relative.path";
 
-let _routesRootFolder: string;
+let routesRootFolder: string;
 const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'];
-
-const _getCleanRelativePath = (absoluteFilePath: string, ext: string): string => {
-	let relativeFilePath = _.toLower(absoluteFilePath) + '/';
-	relativeFilePath = _.replace(relativeFilePath, _.toLower(_routesRootFolder), '');
-	relativeFilePath = _.replace(relativeFilePath, _.toLower(ext), '');
-	relativeFilePath = _.replace(relativeFilePath, 'root', '');
-	relativeFilePath = _.join(_.split(relativeFilePath, '\\'), '/');
-	return relativeFilePath;
-};
 
 const _fixUrl = (url: string, relativeFilePath: string): string => {
 	url = relativeFilePath + url;
@@ -40,7 +32,7 @@ const _addRoute = (fastify: FastifyInstance<Server, IncomingMessage, ServerRespo
 };
 
 const addRoutes = (fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>, folder: string): void => {
-	if (!_routesRootFolder) _routesRootFolder = folder;
+	if (!routesRootFolder) routesRootFolder = folder;
 
 	const fileNames = fs.readdirSync(folder);
 	const files = _.filter(fileNames, (name: string) => !fs.lstatSync(path.join(folder, name)).isDirectory());
@@ -48,7 +40,7 @@ const addRoutes = (fastify: FastifyInstance<Server, IncomingMessage, ServerRespo
 		const ext = path.extname(file);
 		if (ext !== '.ts' && ext !== '.js') return;
 		const absoluteFilePath = path.join(folder, file);
-		const relativeFilePath = _getCleanRelativePath(absoluteFilePath, ext);
+		const relativeFilePath = cleanRelativePath(routesRootFolder, absoluteFilePath, ext);
 
 		const route = require(absoluteFilePath);
 		if (_.isArray(route)) _.each(route, (r: any) => _addRoute(fastify, r, relativeFilePath));

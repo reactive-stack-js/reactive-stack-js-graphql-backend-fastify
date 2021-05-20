@@ -3,7 +3,7 @@
 
 import {merge, pick} from 'lodash';
 
-import User from '../models/user';
+import User from '../../../models/user';
 import jwtTokenTimes from './_f.jwt.token.times';
 
 const authenticate = async (providerUser: any, expiresIn: number): Promise<any | null> => {

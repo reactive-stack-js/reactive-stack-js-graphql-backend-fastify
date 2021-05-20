@@ -6,11 +6,11 @@ import Timeout = NodeJS.Timeout;
 import {get} from 'lodash';
 import {Subject, Subscription} from 'rxjs';
 
-import AStore from './store/_a.store';
-import storeFactory from './store/_f.store.factory';
-import {StoreSubscriptionUpdateType} from './store/_t.store';
-import IUserManager from '../_auth/_i.user.manager';
-import DataProcessorsMap from "./util/data.processors.map";
+import AStore from './store/a.store';
+import storeFactory from './store/services/_f.store.factory';
+import {StoreSubscriptionUpdateType} from './store/services/t.store';
+import IUserManager from './auth/i.user.manager';
+import DataProcessorsMap from "./processing/data.processors.map";
 
 export default class Client extends Subject<any> {
 	private _userManager: IUserManager;
