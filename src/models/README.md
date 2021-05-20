@@ -1,3 +1,0 @@
-# reactive stack js
-
-## models

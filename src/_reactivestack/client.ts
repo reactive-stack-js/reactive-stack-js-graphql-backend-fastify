@@ -7,8 +7,8 @@ import {get} from 'lodash';
 import {Subject, Subscription} from 'rxjs';
 
 import AStore from './store/a.store';
-import storeFactory from './store/services/_f.store.factory';
-import {StoreSubscriptionUpdateType} from './store/services/t.store';
+import storeFactory from './store/factories/_f.store.factory';
+import {StoreSubscriptionUpdateType} from './store/t.store';
 import IUserManager from './auth/i.user.manager';
 import DataProcessorsMap from "./processing/data.processors.map";
 
