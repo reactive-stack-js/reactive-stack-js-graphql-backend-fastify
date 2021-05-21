@@ -85,7 +85,7 @@ export default class DocumentStore extends AStore {
 		else data = id ? await this._loadDocumentById(id) : await this._loadDocument();
 
 		for (const populate of this._populates) {
-			if (data.populate) await data.populate(populate).execPopulate();
+			if (data?.populate) await data.populate(populate).execPopulate();
 		}
 
 		this.emitOne(data);
