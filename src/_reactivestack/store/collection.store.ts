@@ -2,7 +2,7 @@
 'use strict';
 
 import sift from 'sift';
-import {concat, get, intersection, isEmpty, keys, omit} from 'lodash';
+import * as _ from 'lodash';
 import {Model} from 'mongoose';
 
 import AStore, {EStoreType} from './a.store';
@@ -16,25 +16,24 @@ export default class CollectionStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model)
-			.subscribe({
-				next: (change: any): Promise<void> => this.load(change)
-			});
+		this.subscription = observableModel(this.model).subscribe({
+			next: (change: any): Promise<void> => this.load(change)
+		});
 	}
 
 	protected async load(change: any): Promise<void> {
 		// console.log(" - CollectionStore load", change, this._target, this._query, this._sort, this._fields, this._paging);
-		if (isEmpty(this._config)) return this.emitMany();
+		if (_.isEmpty(this._config)) return this.emitMany();
 
 		const {operationType: type, documentKey, updateDescription: description, fullDocument: document} = change;
-		const key = get(documentKey, '_id', '').toString();
+		const key = _.get(documentKey, '_id', '').toString();
 
 		let reload = false;
-		if (isEmpty(change)) {
+		if (_.isEmpty(change)) {
 			reload = true;
 
 		} else {
-			const test = sift(omit(this._query, ['createdAt', 'updatedAt']));
+			const test = sift(_.omit(this._query, ['createdAt', 'updatedAt']));
 			switch (type) {
 				case 'delete':
 					reload = true;
@@ -42,32 +41,39 @@ export default class CollectionStore extends AStore {
 
 				case 'insert':
 					reload = true;
-					if (!isEmpty(this._query)) reload = test(document);
+					if (!_.isEmpty(this._query)) reload = test(document);
 					break;
 
 				case 'replace':
 				case 'update':
 					let us = [];
-					const qs = keys(this._fields);
+					const qs = _.keys(this._fields);
 					if (description) {
 						const {updatedFields, removedFields} = description;
-						us = concat(removedFields, keys(updatedFields));
+						us = _.concat(removedFields, _.keys(updatedFields));
 					}
-					reload = !isEmpty(intersection(qs, us)) || test(document);
+					reload = !_.isEmpty(_.intersection(qs, us)) || test(document);
 					break;
 			}
 		}
 
 		if (!reload) return;
-		console.log(' - Reload Collection for query:', this._query);
+		console.log(' - DB Reload Collection for query:', this._query);
 
+		// TODO: cleanup this mess:
 		if (document && this._incremental) {
 			if ('delete' === type) return this.emitDelete(key);
 
 			for (const populate of this._populates) {
 				await this._model.populate(document, {path: populate});
 			}
-			return this.emitMany({data: document});
+			if (_.isEmpty(this._virtuals)) return this.emitMany({data: document});
+
+			const replacement: any = _.cloneDeep(_.omit(document.toJSON(), this._virtuals));
+			for (const virtual of this._virtuals) {
+				replacement[virtual] = await Promise.resolve(document[virtual]);
+			}
+			return this.emitMany({data: replacement});
 
 		} else {
 			let data = [];
@@ -77,7 +83,17 @@ export default class CollectionStore extends AStore {
 			for (const populate of this._populates) {
 				await this._model.populate(data, {path: populate});
 			}
-			this.emitMany({total, data});
+			if (_.isEmpty(this._virtuals)) return this.emitMany({total, data});
+
+			const replacements: any[] = [];
+			for (const item of data) {
+				const replacement: any = _.cloneDeep(_.omit(item.toJSON(), this._virtuals));
+				for (const virtual of this._virtuals) {
+					replacement[virtual] = await Promise.resolve(item[virtual]);
+				}
+				replacements.push(replacement);
+			}
+			return this.emitMany({total, data: replacements});
 		}
 	}
 
