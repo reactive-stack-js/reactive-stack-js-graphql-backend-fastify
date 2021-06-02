@@ -15,32 +15,30 @@ export default class CountStore extends AStore {
 	}
 
 	protected restartSubscription(): void {
-		this.subscription = observableModel(this.model)
-			.subscribe({
-				next: (change: any): Promise<void> => this.load(change)
-			});
+		this.subscription = observableModel(this.model).subscribe({
+			next: (change: any): Promise<void> => this.load(change)
+		});
 	}
 
 	protected async load(change: any): Promise<void> {
 		if (isEmpty(this._config)) return this.emitOne();
 
-		const {operationType: type, updateDescription: description} = change;
-
 		let reload = true;
+
+		const {operationType: type} = change;
 		if ('update' === type) {
-			const qs = keys(this._fields);
+			const {updateDescription: description} = change;
 			if (!description) reload = true;
 			else {
 				const {updatedFields, removedFields} = description;
 				const us = concat(removedFields, keys(updatedFields));
-				reload = !isEmpty(intersection(qs, us));
+				reload = !isEmpty(intersection(keys(this._fields), us));
 			}
 		}
+		if (!reload) return;
 
-		if (reload) {
-			console.log(' - Reload Count for query:', this._query);
-			const count = await this._model.countDocuments(this._query);
-			this.emitOne(count);
-		}
+		console.log(' - DB Reload Count for query:', this._query);
+		const count = await this._model.countDocuments(this._query);
+		this.emitOne(count);
 	}
 }
