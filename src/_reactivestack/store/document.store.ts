@@ -46,7 +46,7 @@ export default class DocumentStore extends AStore {
 		} else {
 			switch (type) {
 				case 'delete':
-					if (id === key) return this.emitDelete(key);
+					if (id && id === key) return this.emitDelete(key);
 					reload = true;
 					break;
 
@@ -64,19 +64,18 @@ export default class DocumentStore extends AStore {
 					if (id && id === key) reload = true;
 					else if (_.isEmpty(this._fields)) reload = true;
 					else {
-						const qs = _.keys(this._fields);
 						if (!description) reload = true;
 						else {
 							const {updatedFields, removedFields} = description;
 							const us = _.concat(removedFields, _.keys(updatedFields));
-							reload = !_.isEmpty(_.intersection(qs, us));
+							reload = !_.isEmpty(_.intersection(_.keys(this._fields), us));
 						}
 					}
 					break;
 			}
 		}
-
 		if (!reload) return;
+
 		console.log(' - DB Reload Document for query:', this._query);
 
 		let data;
@@ -89,20 +88,21 @@ export default class DocumentStore extends AStore {
 
 		if (_.isEmpty(this._virtuals)) return this.emitOne(data.toJSON());
 
-		const replacement: any = _.cloneDeep(_.omit(data.toJSON(), this._virtuals));
+		const jsonData: any = _.cloneDeep(_.omit(data.toJSON(), this._virtuals));
 		for (const virtual of this._virtuals) {
-			replacement[virtual] = await Promise.resolve(data[virtual]);
+			jsonData[virtual] = await Promise.resolve(data[virtual]);
 		}
-		this.emitOne(replacement);
+		this.emitOne(jsonData);
 	}
 
 	private _pipeFilter(change: any): boolean {
 		if (!_.isEmpty(this._sort)) return true;
 
-		const {operationType: type, documentKey, fullDocument: document} = change;
-		const key = _.get(documentKey, '_id', '').toString();
-
+		const {operationType: type} = change;
 		if ('delete' === type) return true;
+
+		const {documentKey, fullDocument: document} = change;
+		const key = _.get(documentKey, '_id', '').toString();
 		if (key === _getIdFromQuery(this._query)) return true;
 
 		const test = sift(_.omit(this._query, ['createdAt', 'updatedAt']));
