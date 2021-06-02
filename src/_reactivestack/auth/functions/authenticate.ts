@@ -4,7 +4,7 @@
 import {merge, pick} from 'lodash';
 
 import User from '../../../models/user';
-import jwtTokenTimes from './_f.jwt.token.times';
+import jwtTokenTimes from './jwt.token.times';
 
 const authenticate = async (providerUser: any, expiresIn: number): Promise<any | null> => {
 	if (!providerUser) return null;

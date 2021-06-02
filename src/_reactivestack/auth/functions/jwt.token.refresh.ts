@@ -5,7 +5,7 @@ import {merge, get} from 'lodash';
 import * as moment from 'moment';
 import * as jsonwebtoken from 'jsonwebtoken';
 
-import jwtTokenTimes from './_f.jwt.token.times';
+import jwtTokenTimes from './jwt.token.times';
 
 export const _refresh = (token: any): any => merge(token, jwtTokenTimes());
 

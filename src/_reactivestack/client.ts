@@ -7,7 +7,7 @@ import {get} from 'lodash';
 import {Subject, Subscription} from 'rxjs';
 
 import AStore from './store/a.store';
-import storeFactory from './store/factories/_f.store.factory';
+import storeFactory from './store/factories/store.factory';
 import {StoreSubscriptionUpdateType} from './store/t.store';
 import IUserManager from './auth/i.user.manager';
 import DataMiddlewareMap from "./middleware/data.middleware.map";

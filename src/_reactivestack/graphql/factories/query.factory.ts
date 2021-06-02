@@ -6,8 +6,8 @@ import {Model} from 'mongoose';
 
 import {GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType} from 'graphql';
 
-import graphQLFilterTypeFactory from './_f.filter.type.factory';
-import graphQLSortingTypeFactory from './_f.sorting.type.factory';
+import graphQLFilterTypeFactory from './filter.type.factory';
+import graphQLSortingTypeFactory from './sorting.type.factory';
 
 // TODO: add permissions...
 const graphQLQueryFactory = (name: string, model: Model<any>, type: GraphQLObjectType) => {

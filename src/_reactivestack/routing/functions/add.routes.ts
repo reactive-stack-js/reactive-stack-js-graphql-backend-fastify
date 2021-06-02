@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import {FastifyInstance} from 'fastify';
 import {IncomingMessage, Server, ServerResponse} from 'http';
-import cleanRelativePath from "./_f.clean.relative.path";
+import cleanRelativePath from "./clean.relative.path";
 
 let routesRootFolder: string;
 const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'];

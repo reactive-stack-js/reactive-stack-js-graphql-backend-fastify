@@ -7,10 +7,10 @@ import * as _ from 'lodash';
 import {Model} from 'mongoose';
 import {composeWithMongoose} from 'graphql-compose-mongoose';
 
-import processFolder from './_f.process.folder';
-import graphQLQueryFactory from './_f.query.factory';
+import processFolder from './process.folder';
+import graphQLQueryFactory from './query.factory';
 import CollectionsModelsMap from '../../databases/mongodb/collections.models.map';
-import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './_f.type.composer.fields.factory';
+import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './type.composer.fields.factory';
 
 const _metaData = (model: Model<any>): any => {
 	const modelName = model.modelName;

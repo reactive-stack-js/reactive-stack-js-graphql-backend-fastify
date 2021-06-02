@@ -4,7 +4,7 @@
 import * as path from 'path';
 
 import * as _ from 'lodash';
-import processFolder from './_f.process.folder';
+import processFolder from './process.folder';
 
 const _processFile = (root: any, folder: string, file: string): any => {
 	const fullPath = path.join(folder, file);

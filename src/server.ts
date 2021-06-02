@@ -22,8 +22,8 @@ import fastifyBlipp from 'fastify-blipp';
 import fastifyHelmet from 'fastify-helmet';
 
 import GQLSchema from './graphql.schema';
-import websocket from './functions/_f.websocket';
-import addRoutes from './_reactivestack/routing/functions/_f.add.routes';
+import websocket from './functions/websocket';
+import addRoutes from './_reactivestack/routing/functions/add.routes';
 import MongoDBConnector from './_reactivestack/databases/mongodb/mongodb.connector';
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false});

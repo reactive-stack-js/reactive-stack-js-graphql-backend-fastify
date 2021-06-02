@@ -6,7 +6,7 @@ import {Model} from 'mongoose';
 import {ObjectTypeComposer} from 'graphql-compose';
 import {composeWithMongoose} from 'graphql-compose-mongoose';
 
-import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './_f.type.composer.fields.factory';
+import typeComposerFieldsFactory, {GraphQLTypeFactoryFieldType} from './type.composer.fields.factory';
 
 const _createTargetName = (name: string): string => {
 	const parts = _.split(name, 'Id');
