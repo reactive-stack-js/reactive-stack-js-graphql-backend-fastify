@@ -7,9 +7,9 @@ import * as dotenv from 'dotenv';
 import {AddressInfo} from 'net';
 import {Server, IncomingMessage, ServerResponse} from 'http';
 
-dotenv.config({path: '.env.local'});
-// IMPORTANT: must execute dotenv before importing anything
-// that depends on process.env (like MongoDBConnector, for example)
+// IMPORTANT: must execute dotenv.config before importing anything requires it (like DBConnectors)
+const result = dotenv.config({path: '.env.local'});
+if (result.error) throw result.error;
 
 import {fastify, FastifyInstance, FastifyRequest} from 'fastify';
 import {RouteGenericInterface} from 'fastify/types/route';

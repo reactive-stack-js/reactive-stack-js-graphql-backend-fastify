@@ -8,10 +8,10 @@ import * as dotenv from 'dotenv';
 const result = dotenv.config({path: '.env.local'});
 if (result.error) throw result.error;
 
-import initiateCronjobs from "./_reactivestack/functions/initiate.cronjobs";
+import initiateWorkers from "./_reactivestack/functions/initiate.workers";
 import MongoDBConnector from "./_reactivestack/databases/mongodb/mongodb.connector";
 
 MongoDBConnector.init();
 
-initiateCronjobs(path.join(__dirname, 'cronjobs'));
-console.log('All cronjobs started.');
+initiateWorkers(path.join(__dirname, 'workers'));
+console.log('All workers started.');
