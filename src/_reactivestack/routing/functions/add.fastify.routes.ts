@@ -31,7 +31,7 @@ const _addRoute = (fastify: FastifyInstance<Server, IncomingMessage, ServerRespo
 	if (_.isPlainObject(route) && METHODS.includes(route.method)) fastify.route(route);
 };
 
-const addRoutes = (fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>, folder: string): void => {
+const addFastifyRoutes = (fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>, folder: string): void => {
 	if (!routesRootFolder) routesRootFolder = folder;
 
 	const fileNames = fs.readdirSync(folder);
@@ -48,6 +48,6 @@ const addRoutes = (fastify: FastifyInstance<Server, IncomingMessage, ServerRespo
 	});
 
 	const folders = _.filter(fileNames, (name: string) => fs.lstatSync(path.join(folder, name)).isDirectory());
-	folders.forEach((file: string) => addRoutes(fastify, path.join(folder, file)));
+	folders.forEach((file: string) => addFastifyRoutes(fastify, path.join(folder, file)));
 };
-export default addRoutes;
+export default addFastifyRoutes;

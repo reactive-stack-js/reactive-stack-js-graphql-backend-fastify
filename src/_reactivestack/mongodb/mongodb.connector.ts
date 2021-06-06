@@ -4,11 +4,9 @@
 import * as mongoose from 'mongoose';
 import {Connection} from 'mongoose';
 
-const MONGODB_URI: string = process.env.MONGODB_URI || '';
-
 export default class MongoDBConnector {
-	public static init(): Connection {
-		if (!MongoDBConnector._instance) MongoDBConnector._instance = new MongoDBConnector();
+	public static init(mongoDbUri: string): Connection {
+		if (!MongoDBConnector._instance) MongoDBConnector._instance = new MongoDBConnector(mongoDbUri);
 		return MongoDBConnector._instance._connection;
 	}
 
@@ -19,9 +17,9 @@ export default class MongoDBConnector {
 	private static _instance: MongoDBConnector;
 	private readonly _connection: Connection;
 
-	private constructor() {
+	private constructor(mongoDbUri: string) {
 		mongoose
-			.connect(MONGODB_URI, {
+			.connect(mongoDbUri, {
 				poolSize: 10,
 				useCreateIndex: true,
 				useNewUrlParser: true,
@@ -32,6 +30,6 @@ export default class MongoDBConnector {
 
 		this._connection = mongoose.connection;
 		this._connection.on('error', console.error.bind(console, 'connection error:'));
-		this._connection.once('open', () => console.log('MongoDB connected to', MONGODB_URI));
+		this._connection.once('open', () => console.log('MongoDB connected to', mongoDbUri));
 	}
 }

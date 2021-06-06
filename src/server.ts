@@ -23,8 +23,8 @@ import fastifyHelmet from 'fastify-helmet';
 
 import GQLSchema from './graphql.schema';
 import websocket from './functions/websocket';
-import addRoutes from './_reactivestack/routing/functions/add.routes';
-import MongoDBConnector from './_reactivestack/databases/mongodb/mongodb.connector';
+import addFastifyRoutes from './_reactivestack/routing/functions/add.fastify.routes';
+import MongoDBConnector from './_reactivestack/mongodb/mongodb.connector';
 
 const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false});
 
@@ -84,16 +84,17 @@ const _addWebSocketListener = (srv: FastifyInstance<Server, IncomingMessage, Ser
 	srv.get('/ws', {websocket: true}, websocket);
 };
 
+const MONGODB_URI: string = process.env.MONGODB_URI || '';
 // Run the server!
 const startFastifyServer = async () => {
 	try {
-		MongoDBConnector.init();
+		MongoDBConnector.init(MONGODB_URI);
 
 		_addJWTHook(server);
 
 		_addWebSocketListener(server);
 
-		addRoutes(server, path.join(__dirname, 'routes'));
+		addFastifyRoutes(server, path.join(__dirname, 'routes'));
 
 		await server.listen(parseInt(process.env.PORT || '3007', 10));
 		console.log('');

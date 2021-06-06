@@ -6,7 +6,7 @@ import {filter} from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import AStore, {EStoreType} from './a.store';
-import observableModel from '../databases/mongodb/functions/observable.model';
+import observableModel from '../mongodb/functions/observable.model';
 
 // tslint:disable-next-line:variable-name
 const _getIdFromQuery = (query: any): string => (_.isString(query) ? query : _.get(query, '_id', '').toString());

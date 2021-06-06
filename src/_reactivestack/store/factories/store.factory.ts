@@ -8,7 +8,7 @@ import {StoreScopeType} from '../t.store';
 import CountStore from '../count.store';
 import DocumentStore from '../document.store';
 import CollectionStore from '../collection.store';
-import CollectionsModelsMap from '../../databases/mongodb/collections.models.map';
+import CollectionsModelsMap from '../../mongodb/collections.models.map';
 
 const storeFactory = (scope: StoreScopeType, observe: string, target: string): AStore => {
 	const model: Model<any> = CollectionsModelsMap.getModelByCollection(observe);

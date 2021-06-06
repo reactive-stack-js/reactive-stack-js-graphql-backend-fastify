@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import {Model} from 'mongoose';
 
 import AStore, {EStoreType} from './a.store';
-import observableModel from '../databases/mongodb/functions/observable.model';
+import observableModel from '../mongodb/functions/observable.model';
 
 export default class CollectionStore extends AStore {
 	constructor(model: Model<any>, target: string) {

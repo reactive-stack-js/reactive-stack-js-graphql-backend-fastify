@@ -4,7 +4,7 @@
 import {concat, intersection, isEmpty, keys} from 'lodash';
 import {Model} from 'mongoose';
 
-import observableModel from '../databases/mongodb/functions/observable.model';
+import observableModel from '../mongodb/functions/observable.model';
 import AStore, {EStoreType} from './a.store';
 
 export default class CountStore extends AStore {
