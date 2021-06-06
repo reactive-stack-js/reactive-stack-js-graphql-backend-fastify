@@ -6,7 +6,7 @@ import {isString} from 'lodash';
 import {SocketStream} from 'fastify-websocket';
 
 import Client from '../_reactivestack/client';
-import UserManager from '../_reactivestack/auth/user.manager';
+import UserManager from '../auth/user.manager';
 
 const jwtSecret = process.env.JWT_SECRET;
 

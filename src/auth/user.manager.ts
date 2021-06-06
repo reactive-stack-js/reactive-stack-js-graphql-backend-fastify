@@ -5,7 +5,7 @@ import {get} from 'lodash';
 import * as jsonwebtoken from 'jsonwebtoken';
 
 import jwtTokenRefresh from './functions/jwt.token.refresh';
-import IUserManager, {UserManagerRefreshType} from './i.user.manager';
+import IUserManager, {UserManagerRefreshType} from '../_reactivestack/auth/i.user.manager';
 
 export default class UserManager implements IUserManager {
 	private _location: string;
