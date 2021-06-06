@@ -12,7 +12,7 @@ import {StoreSubscriptionUpdateType} from './store/t.store';
 import IUserManager from './auth/i.user.manager';
 import DataMiddlewareMap from "./middleware/data.middleware.map";
 
-export default class Client extends Subject<any> {
+export default class ReactiveStackClient extends Subject<any> {
 	private _userManager: IUserManager;
 
 	private _ping = 0;
@@ -29,7 +29,7 @@ export default class Client extends Subject<any> {
 	}
 
 	public async consume(message: any): Promise<void> {
-		// console.log(" - Client::consume received message", message.type);
+		// console.log(" - ReactiveStackClient::consume received message", message.type);
 
 		switch (message.type) {
 			case 'pong':
@@ -80,7 +80,7 @@ export default class Client extends Subject<any> {
 	}
 
 	private set location(location: string) {
-		// console.log(" - Client location", "[" + this._location + "]", "[" + location + "]");
+		// console.log(" - ReactiveStackClient location", "[" + this._location + "]", "[" + location + "]");
 		if (location === this._location) return;
 		this._location = location;
 
