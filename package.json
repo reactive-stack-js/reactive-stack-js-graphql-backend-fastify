@@ -20,7 +20,6 @@
 		"print": "dir src /s /b > print.txt"
 	},
 	"dependencies": {
-		"@types/json-diff": "^0.5.0",
 		"@types/lodash": "^4.14.161",
 		"@types/moment-timezone": "^0.5.30",
 		"@types/mongoose": "^5.7.36",
@@ -50,6 +49,7 @@
 		"moment-timezone": "^0.5.31",
 		"mongoose": "^5.10.6",
 		"node-cron": "^2.0.3",
+		"reactive-stack-js-backend": "^0.1.4",
 		"rxjs": "^6.6.3",
 		"sift": "^13.3.5",
 		"ts-node": "^9.0.0",

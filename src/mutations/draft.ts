@@ -3,12 +3,12 @@
 
 import {Model, Types} from 'mongoose';
 import {each, first, get, includes, keys, omit, set, uniq} from 'lodash';
+import {CollectionsModelsMap} from 'reactive-stack-js-backend';
 
 import {GraphQLJSONObject} from 'graphql-type-json';
-import {GraphQLBoolean, GraphQLID, GraphQLString} from 'graphql';
 
+import {GraphQLBoolean, GraphQLID, GraphQLString} from 'graphql';
 import Draft from '../models/draft';
-import CollectionsModelsMap from '../_reactivestack/mongodb/collections.models.map';
 
 const _hasItemId = (model: Model<any>): boolean => includes(keys(model.schema.paths), 'itemId');
 

@@ -4,8 +4,8 @@
 import {v4 as uuidv4} from 'uuid';
 import {isString} from 'lodash';
 import {SocketStream} from 'fastify-websocket';
+import {ReactiveStackClient} from 'reactive-stack-js-backend';
 
-import ReactiveStackClient from '../_reactivestack/reactive.stack.client';
 import UserManager from '../auth/user.manager';
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -41,7 +41,7 @@ export default (connection: SocketStream): void => {
 		console.log('[WS] ReactiveStackClient disconnected', mySocketID);
 		if (subscription) subscription.unsubscribe();
 		subscription = null;
-		if (client) client.destroy();
+		if (client) client.disconnected();
 		client = null;
 	});
 
