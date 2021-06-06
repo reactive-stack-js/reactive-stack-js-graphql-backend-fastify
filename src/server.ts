@@ -52,9 +52,9 @@ server.register(fastifyGQL, {
 });
 
 server.register(fastifyBlipp);
+server.register(fastifyHelmet);
 server.register(fastifyWebsocket);
 server.register(fastifyJwt, {secret: process.env.JWT_SECRET});
-server.register(fastifyHelmet, {contentSecurityPolicy: false}); // NOTE: do this only on NON-PROD environments!
 server.register(fastifyCors, {
 	// put your options here
 	origin: [
