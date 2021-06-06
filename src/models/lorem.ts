@@ -4,7 +4,7 @@
 import {model, Schema} from 'mongoose';
 import {GraphQLString} from 'graphql';
 
-import graphQLTypeComposerFactory from '../_reactivestack/graphql/factories/type.composer.factory';
+import graphQLTypeComposerFactory from '../graphql/functions/type.composer.factory';
 
 export const LoremSchema = new Schema(
 	{

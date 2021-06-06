@@ -3,7 +3,7 @@
 
 import {v4 as uuidv4} from 'uuid';
 import {model, Schema} from 'mongoose';
-import graphQLTypeComposerFactory from '../_reactivestack/graphql/factories/type.composer.factory';
+import graphQLTypeComposerFactory from '../graphql/functions/type.composer.factory';
 
 const DraftSchema = new Schema(
 	{

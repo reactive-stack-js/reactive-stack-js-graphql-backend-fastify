@@ -3,7 +3,7 @@
 
 import {model, Schema} from 'mongoose';
 import Dolor, {GraphQLDolorType} from './dolor';
-import graphQLTypeComposerFactory from '../_reactivestack/graphql/factories/type.composer.factory';
+import graphQLTypeComposerFactory from '../graphql/functions/type.composer.factory';
 
 const ConsecteturSchema = new Schema(
 	{

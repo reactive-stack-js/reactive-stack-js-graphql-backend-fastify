@@ -3,7 +3,7 @@
 
 import {model, Schema} from 'mongoose';
 import Lorem, {GraphQLLoremType} from './lorem';
-import graphQLTypeComposerFactory from '../_reactivestack/graphql/factories/type.composer.factory';
+import graphQLTypeComposerFactory from '../graphql/functions/type.composer.factory';
 
 const IpsumSchema = new Schema(
 	{
