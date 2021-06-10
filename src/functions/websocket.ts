@@ -6,7 +6,7 @@ import {isString} from 'lodash';
 import {SocketStream} from 'fastify-websocket';
 import {ReactiveStackClient} from 'reactive-stack-js-backend';
 
-import UserManager from '../auth/user.manager';
+import ConnectionManager from '../auth/connection.manager';
 
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -18,8 +18,8 @@ export default (connection: SocketStream): void => {
 	console.log('[WS] ReactiveStackClient connected', mySocketID);
 	socket.send(JSON.stringify({type: 'socketId', socketId: mySocketID}));
 
-	const userManager = new UserManager(jwtSecret);
-	let client = new ReactiveStackClient(userManager);
+	const connectionManager = new ConnectionManager(jwtSecret);
+	let client = new ReactiveStackClient(connectionManager);
 	let subscription = client.subscribe({
 		next: (message): void => {
 			if (!isString(message)) message = JSON.stringify(message);

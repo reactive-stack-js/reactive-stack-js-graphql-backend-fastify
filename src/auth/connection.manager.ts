@@ -3,11 +3,11 @@
 
 import {get} from 'lodash';
 import * as jsonwebtoken from 'jsonwebtoken';
-import {IUserManager, UserManagerRefreshType} from 'reactive-stack-js-backend';
+import {IConnectionManager, ConnectionManagerRefreshType} from 'reactive-stack-js-backend';
 
 import jwtTokenRefresh from './functions/jwt.token.refresh';
 
-export default class UserManager implements IUserManager {
+export default class ConnectionManager implements IConnectionManager {
 	private _location: string;
 	private _jwt: string;
 	private _user: any;
@@ -67,7 +67,7 @@ export default class UserManager implements IUserManager {
 		this._user = null;
 	}
 
-	public checkSession(): UserManagerRefreshType {
+	public checkSession(): ConnectionManagerRefreshType {
 		if (this._jwt) {
 			const refreshPayload = jwtTokenRefresh(this._jwtSecret, this._jwt);
 			if (refreshPayload) {
