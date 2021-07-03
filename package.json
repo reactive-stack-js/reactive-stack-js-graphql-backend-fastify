@@ -15,8 +15,9 @@
 		"clean": "tslint --config tslint-imports.json --fix --project .",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"prep": "yarn clean && yarn format && yarn lint",
-		"last": "yarn upgrade-interactive --latest",
 		"up": "yarn upgrade-interactive",
+		"upgrade": "yarn upgrade --latest",
+		"latest": "yarn upgrade-interactive --latest",
 		"print": "dir src /s /b > print.txt"
 	},
 	"dependencies": {
@@ -49,7 +50,7 @@
 		"moment-timezone": "^0.5.31",
 		"mongoose": "^5.10.6",
 		"node-cron": "^2.0.3",
-		"reactive-stack-js-backend": "^0.1.4",
+		"reactive-stack-js-backend": "^0.3.0",
 		"rxjs": "^6.6.3",
 		"sift": "^13.3.5",
 		"ts-node": "^9.0.0",
